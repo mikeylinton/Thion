@@ -1,0 +1,108 @@
+import re as ree
+from graphviz import Digraph as Dot
+import argparse as ap
+authority={"name":[],"digit":[]};
+G=Dot()
+G.body.append('subgraph "cluster_0" {')
+
+#Ap=ap.ArgumentParser('Some text')
+#Ap.add_argument('some text!', metavar='N', type=int, nargs='+',
+#                    help='Can bob make it into the break room?')
+#Ap.add_argument('--verbose', '-v', dest='accumulate', action='store_const',
+#                    const=sum, default=max,
+#                    help='verbose verbose verbose')
+
+#args = Ap.parse_args()
+#xprint(args.accumulate(args.integers))
+
+
+
+def subgraph(label, activitys):
+	with G.subgraph(name='cluster_'+str(label)) as X:
+#		X.attr(style='filled', color='lightgrey')
+#		X.node_attr.update(style='filled', color='black')
+#		X.edges([('a0', 'a1'), ('a1', 'a2'), ('a2', 'a3')])
+#		X.edges(activitys)
+		if isinstance(activitys, list):
+			for activity in activitys:
+				X.node(activity.strip())
+		elif activitys.strip() == '':
+			G.body.append('#No activitys')
+		else:
+			X.node(activitys.strip())
+		X.attr(label=label)
+
+
+def enviroment(line):
+	if ree.search(".*:", line):
+		label=line.replace(':', '')
+		G.body.append('label="'+label+'"')
+	else:
+		if ree.search("^.* \[.*\]", line):
+			room,activitys=line.split(" [")
+			activitys=activitys.replace(']', '')
+			print(activitys)
+			subgraph(room, activitys.split(", "))
+		else:
+			subgraph(line, '')
+
+def players(line):
+	print(line)
+	player,digit=line.split('=')
+	print(digit)
+	subgraph(player, player)
+	authority[player]=digit
+
+def activitys(line):
+	if ree.search(" to ", line) or ree.search(" TO ", line):
+		try:
+			a,b=line.split(" to ")
+		except:
+			a,b=line.split(" TO ")
+		G.edge(a, b)
+#	Bad logic
+		authority[b]=authority[a]
+#
+		if authority[a]=='0':
+			G.body.append('[color=blue]')
+		elif authority[a]=='1':
+			G.body.append('[color=green]')
+		elif authority[a]=='2':
+			G.body.append('[color=orange]')
+		elif authority[a]=='3':
+			G.body.append('[color=red]')
+		else:
+			G.body.append('#Authority error')
+
+
+inputfile=open('graph.in', 'r')
+while True:
+	line=inputfile.readline().strip()
+	if not line:
+		break
+	if not ree.search("^#.*", line):
+
+		if ree.search("^\[.*\]", line):
+			if ree.search("^\[Enviroment\]", line):
+				line=inputfile.readline().strip()
+				while not ree.search("^\[.*\]", line) and line:
+					if not ree.search("^#.*", line):
+						enviroment(line)
+					line=inputfile.readline().strip()
+			if ree.search("^\[Players\]", line):
+				line=inputfile.readline().strip()
+				while not ree.search("^\[.*\]", line) and line:
+					if not ree.search("^#.*", line):
+						players(line)
+					line=inputfile.readline().strip()
+			if ree.search("^\[Activitys\]", line):
+				line=inputfile.readline()
+				while not ree.search("^\[.*\]", line) and line:
+					if not ree.search("^#.*", line):
+						activitys(line)
+					line=inputfile.readline().strip()
+G.body.append('}')
+print(G)
+outFile=open('out.dot', 'w')
+outFile.write(str(G))
+outFile.close()

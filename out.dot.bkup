@@ -1,0 +1,43 @@
+digraph ladder { 
+ranksep=".1"; nodesep=".1"; splines="line";
+	subgraph "cluster_Main building" {
+	label="Main building"
+# Define the defaults
+	node [shape=point fontsize=10]
+	edge [dir=none fontsize=10]
+
+	subgraph "cluster_Meeting room" {
+		"0(meeting room)" -> "1(meeting room)" -> "2(meeting room)" -> "3(meeting room)" -> "4(meeting room)" -> "5(meeting room)"-> "6(meeting room)" -> "7(meeting room)" -> "8(meeting room)" [weight=1000 label="   "]
+		"1(Alice)" -> "2(Alice)" -> "3(Alice)" -> "4(Alice)" -> "5(Alice)" -> "6(Alice)" -> "7(Alice)" -> "8(Alice)" [weight=1000 label="   "]
+		"2(Eve)" -> "3(Eve)" -> "4(Eve)" -> "5(Eve)" -> "6(Eve)" -> "7(Eve)" -> "8(Eve)" [weight=1000 label="   "]
+		{ rank=same; edge[style=invis] "1(meeting room)" -> "1(Alice)" }
+		{ rank=same; edge[style=invis] "2(meeting room)" -> "2(Alice)" -> "2(Eve)" }
+		{ rank=same; edge[style=invis] "3(meeting room)" -> "3(Alice)" -> "3(Eve)" }
+		{ rank=same; edge[style=invis] "4(meeting room)" -> "4(Alice)" -> "4(Eve)" }
+		{ rank=same; edge[style=invis] "5(meeting room)" -> "5(Alice)" -> "5(Eve)" }
+		{ rank=same; edge[style=invis] "6(meeting room)" -> "6(Alice)" -> "6(Eve)" }
+		{ rank=same; edge[style=invis] "7(meeting room)" -> "7(Alice)" -> "7(Eve)" }
+		{ rank=same; edge[style=invis] "8(meeting room)" -> "8(Alice)" -> "8(Eve)" }
+                label="Meeting room"
+        }
+
+
+ # Column labels
+	Alice [shape=none]
+	Eve [shape=none]
+   
+ # Draw the 4 column headings, no line
+	{ rank=same; edge[style=invis] "Alice" -> "Eve" }
+	"Alice" -> "0(meeting room)" [style=dotted label="Unlock" weight=1000 color=green]
+	"Alice" -> "1(Alice)" [label="Enter" weight=1000]
+	"Eve" -> "2(Eve)" [label="Enter" weight=1000]
+	"3(Alice)" -> "3(Eve)" [dir=forward style=dotted label="Share msg"]
+	"4(Alice)" -> "4(Eve)" [dir=back style=dotted label="Share msg"]
+	"5(Alice)" -> "5(meeting room)" [style=dotted label=Lock color=red]
+        "6(Alice)" -> "6(Eve)" [dir=forward style=solid label="Share msg"]
+        "7(Alice)" -> "7(Eve)" [dir=back style=solid label="Share msg"]
+	"8(Alice)" -> "8(meeting room)" [style=dotted label="Unlock" color=green]
+	"8(Alice)" -> end [label="Exit"]
+	"8(Eve)" -> end [label="Exit"]
+	}
+}

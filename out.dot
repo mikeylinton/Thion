@@ -1,0 +1,28 @@
+digraph {
+ranksep=".1"; nodesep=".1"; splines="line"; weight=1000; edge [dir=none fontsize=10 weight=1000]; node [shape=point fontsize=10 weight=1000]
+"Building_A" [shape=none] [label="Building A lock"]
+	Building_A -> "0(Building_A)"
+"Alice" [shape=none] [label="Alice(3)"]
+	Alice -> "0(Alice)"
+{ rank=same; edge[style=invis] "Building_A" -> "Alice" }
+"Eve" [shape=none] [label="Eve(2)"]
+	Eve -> "0(Eve)"
+{ rank=same; edge[style=invis] "Building_A" -> "Eve" }
+	"0(Building_A)" -> "1(Building_A)"
+"0(Alice)" -> "1(Alice)" [style=dotted]
+"0(Eve)" -> "2(Eve)" [style=dotted]
+	subgraph cluster_Building_A {
+	label="Building A"
+	"Building_A_Meeting_room" [shape=none] [label="Meeting room lock"]
+		Building_A_Meeting_room -> "0(Building_A_Meeting_room)"
+		"1(Alice)"
+		"1(Building_A)" -> "2(Building_A)"
+		"1(Eve)" -> "2(Eve)"
+		"0(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room)"
+		subgraph cluster_Building_A_Meeting_room {
+		label="Meeting room"
+			"1(Building_A_Meeting_room)"
+			"1(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room)"
+		}
+	}
+}
