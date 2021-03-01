@@ -1,2 +1,2 @@
 # honors-project
-sample.in -> graphiz.py -> out.dot -> Tpdf.sh -> out.pdf
+sample.in -> graphiz.py -> out.dot -> out.pdf
