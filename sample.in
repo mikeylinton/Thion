@@ -2,7 +2,7 @@
 Building A[Meeting room];
 #Building B[Meeting room];
 [Players]
-Alice(3);Eve(2);
+Eve(2);Alice(3);
 #Bob(1);Hector(0);
 [Pre-conditions]
 locked(Meeting room);
