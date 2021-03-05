@@ -2,9 +2,9 @@ import re as ree;from graphviz import Digraph as Dot;import argparse as ap
 ##authority={"name":[],"digit":[]}
 G=Dot()
 
-G.body.append('ranksep=".1"; nodesep=".1"; splines="line"; edge [dir=none fontsize=10]; node [shape=point fontsize=10]')
+G.body.append('rankdir=LR;ranksep="0.2";nodesep="0.5";splines="line";edge[style=dotted;dir=none;fontsize=8];node[style=invis;shape=point;fontsize=10];')
 
-inputfile=open('sample.in', 'r')
+inputfile=open('dev.in', 'r')
 count=0
 ##section=''
 input_buildings=[]

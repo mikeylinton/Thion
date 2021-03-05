@@ -1,0 +1,77 @@
+digraph {
+    label="dev.dot"
+    rankdir=LR;ranksep="0.2";nodesep="0.5";splines="line";edge[style=dotted;dir=none;fontsize=8];node[style=invis;shape=point;fontsize=10];
+    
+    "Building_A" [style="" shape=none label="Building A\nlock"];"0(Building_A)" [style=""];"Building_A" -> "0(Building_A)" [style=invis]
+
+	"Alice" [style="" shape=none label="Alice\n(3)"];"0(Building_A_Alice)" [style=""];"Alice" -> "0(Building_A_Alice)" [style=invis]
+
+    "Eve" [style="" shape=none label="Eve\n(3)"];"0(Building_A_Eve)" [style=""];"Eve" -> "0(Building_A_Eve)" [style=invis]
+	
+{rank=same; edge[style=invis] "Building_A" -> "Alice" -> "Eve"};{rank=same; edge[style=invis] "0(Building_A)" -> "0(Building_A_Alice)" -> "0(Building_A_Eve)"}
+
+    subgraph cluster_Building_A {
+	    label="Building A"
+        
+    "0(Building_A)" -> "1(Building_A)" [style=""];"1(Building_A)" [style=""]
+        "1(Building_A_Alice)" [style=""]
+        "0(Building_A_Alice)" -> "1(Building_A_Alice)"
+        "0(Building_A_Eve)" -> "1(Building_A_Eve)"
+    {rank=same; edge[style=invis] "1(Building_A)" -> "1(Building_A_Alice)" -> "1(Building_A_Eve)"}
+
+    "1(Building_A)" -> "2(Building_A)" [style=""];"2(Building_A)" [style=""]
+		"1(Building_A_Alice)" -> "2(Building_A_Alice)"
+        "2(Building_A_Eve)" [style=""];
+		"1(Building_A_Eve)" -> "2(Building_A_Eve)"
+    {rank=same; edge[style=invis] "2(Building_A)" -> "2(Building_A_Alice)" -> "2(Building_A_Eve)"}
+
+    "2(Building_A)" -> "3(Building_A)" [style=""];"3(Building_A)" [style=""]
+		"2(Building_A_Alice)" -> "3(Building_A_Alice)"
+		"2(Building_A_Eve)" -> "3(Building_A_Eve)"
+    {rank=same; edge[style=invis] "3(Building_A)" -> "3(Building_A_Alice)" -> "3(Building_A_Eve)"}
+
+    "3(Building_A)" -> "4(Building_A)" [style=""];"4(Building_A)" [style=""]
+    "Building_A_Meeting_room" [style="" shape=none label="Meeting room\nlock"];"Building_A_Meeting_room" -> "0(Building_A_Meeting_room)" [style=invis]; "0(Building_A_Meeting_room)" [style=""]
+    "0(Building_A_Meeting_room_Alice)" -> "0(Building_A_Meeting_room_Eve)" [label="unlock       "];"0(Building_A_Meeting_room_Eve)" -> "0(Building_A_Meeting_room)" [dir="forward"];"0(Building_A_Meeting_room_Alice)" [style=""]
+		"3(Building_A_Alice)" -> "0(Building_A_Meeting_room_Alice)"
+        "0(Building_A_Meeting_room_Eve)"
+		"3(Building_A_Eve)" -> "0(Building_A_Meeting_room_Eve)"
+
+    {rank=same; edge[style=invis] "0(Building_A_Meeting_room)" -> "0(Building_A_Meeting_room_Alice)" -> "0(Building_A_Meeting_room_Eve)"}
+
+        subgraph cluster_Building_A_Meeting_room {
+            label="Meeting room"
+
+            "0(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room)" [style=""];"1(Building_A_Meeting_room)" [style=""]
+            "1(Building_A_Meeting_room_Alice)" [style=""]
+            "0(Building_A_Meeting_room_Alice)" -> "1(Building_A_Meeting_room_Alice)" 
+            "1(Building_A_Meeting_room_Eve)"
+            "0(Building_A_Meeting_room_Eve)" -> "1(Building_A_Meeting_room_Eve)" 
+            {rank=same; edge[style=invis] "1(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room_Alice)" -> "1(Building_A_Meeting_room_Eve)"}
+
+            "1(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room)" [style=""];"2(Building_A_Meeting_room)" [style=""]
+            "2(Building_A_Meeting_room_Alice)"
+            "1(Building_A_Meeting_room_Alice)" -> "2(Building_A_Meeting_room_Alice)"
+            "2(Building_A_Meeting_room_Eve)" [style=""]
+            "1(Building_A_Meeting_room_Eve)" -> "2(Building_A_Meeting_room_Eve)" 
+        {rank=same; edge[style=invis] "2(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room_Alice)" -> "2(Building_A_Meeting_room_Eve)"}
+
+            "2(Building_A_Meeting_room)" -> "3(Building_A_Meeting_room)" [style=""];"3(Building_A_Meeting_room)" [style=""]
+            "2(Building_A_Meeting_room_Alice)" -> "3(Building_A_Meeting_room_Alice)"
+            "2(Building_A_Meeting_room_Eve)" -> "3(Building_A_Meeting_room_Eve)"
+        {rank=same; edge[style=invis] "2(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room_Alice)" -> "2(Building_A_Meeting_room_Eve)"}
+
+            "2(Building_A_Meeting_room)" -> "3(Building_A_Meeting_room)" [style=""];"3(Building_A_Meeting_room)" [style=""]
+            "2(Building_A_Meeting_room_Alice)" -> "3(Building_A_Meeting_room_Alice)"njjjjjjjjxxfxf
+            "2(Building_A_Meeting_room_Eve)" -> "3(Building_A_Meeting_room_Eve)"
+        {rank=same; edge[style=invis] "2(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room_Alice)" -> "2(Building_A_Meeting_room_Eve)"}
+
+        }
+        "3(Building_A_Meeting_room)";"3(Building_A_Meeting_room_Alice)";"3(Building_A_Meeting_room_Eve)"
+        "4(Building_A)" -> "5(Building_A)" [style=""];"5(Building_A)" [style=""]
+    {rank=same; edge[style=invis] "5(Building_A)" -> "0(Building_A_Meeting_room_Alice)" -> "0(Building_A_Meeting_room_Eve)"}
+
+
+	}
+
+}

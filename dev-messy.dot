@@ -1,0 +1,46 @@
+digraph {
+    ranksep=".1"; nodesep=".1"; splines="line"; edge [dir=none fontsize=10]; node [shape=point fontsize=10]
+    
+    "Building_A_Meeting_room" [shape=none label="Meeting room\nlock"]
+
+    "Building_A" [shape=none label="Building A\nlock"]
+    "Building_A" -> "0(Building_A)" [style=invis]
+
+	"Alice" [shape=none label="Alice\n(3)"]
+	"Alice" -> "0(Building_A_Alice)" [style=invis]
+
+    "Eve" [shape=none label="Eve\n(3)"]
+	"Eve" -> "0(Building_A_Eve)" [style=invis]
+	
+{rank=same; edge[style=invis] "Building_A_Meeting_room" -> "Building_A" -> "Alice" -> "Eve"}
+{rank=same; edge[style=invis] "0(Building_A)" -> "0(Building_A_Alice)" -> "0(Building_A_Eve)"}
+
+    "Building_A_Meeting_room" -> "0(Building_A_Meeting_room)" [style=invis]
+
+    subgraph cluster_Building_A {
+	    label="Building A"
+        "0(Building_A)" -> "1(Building_A)"
+		"0(Building_A_Alice)" -> "1(Building_A_Alice)" [style=dotted]
+    {rank=same; edge[style=invis] "1(Building_A)" -> "1(Building_A_Alice)"}
+
+        "1(Building_A)" -> "2(Building_A)"
+		"0(Building_A_Eve)" -> "2(Building_A_Eve)" [style=dotted]
+    {rank=same; edge[style=invis] "2(Building_A)" -> "2(Building_A_Eve)"}
+        
+    "0(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room)" 
+
+		subgraph cluster_Building_A_Meeting_room {
+		    label="Meeting room"
+
+            "2(Building_A_Eve)" -> "1(Building_A_Meeting_room_Eve)" [style=dotted]
+        {rank=same; edge[style=invis] "1(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room_Eve)"}            
+
+            "1(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room)"
+            "1(Building_A_Alice)" -> "2(Building_A_Meeting_room_Alice)" [style=dotted]
+        {rank=same; edge[style=invis] "2(Building_A_Meeting_room)" -> "2(Building_A_Meeting_room_Alice)"}
+
+		}
+
+	}
+
+}
