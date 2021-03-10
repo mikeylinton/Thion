@@ -1,13 +1,22 @@
 [Environment]
 Building A[Meeting room];
-#Building B[Meeting room];
+Building B[Meeting room];
 [Players]
-Eve(2);Alice(3);
-#Bob(1);Hector(0);
-[Pre-conditions]
-locked(Meeting room);
-[Main-flow]
-enter(Alice,Building A);enter(Eve,Building A);enter(Alice,Meeting room);enter(Eve,Meeting room);exit(Alice);exit(Eve);
-#enter(Bob,Building B);enter(Hector,Building B);enter(Bob,Meeting room);enter(Hector,Meeting room);exit(Bob);exit(Hector);
-[Post-conditions]
+Alice(3)[Secret Message(2)];Bob(1);Eve(3);
+[PreConditions]
+locked(Building A);
+locked(Building A[Meeting room]);
+[MainFlow]
+unlock(Alice,Building A);
+enter(Bob,Building A);
+enter(Alice,Building A);
+unlock(Alice,Meeting room);
+enter(Bob,Meeting room);
+enter(Alice,Meeting room);
+enter(Eve,Building A[Meeting room]);
+exit(Bob,Building A);
+exit(Alice,Meeting room);
+exit(Eve,Meeting room);
+lock(Alice,Meeting room);
+[PostConditions]
 locked(Meeting room);
