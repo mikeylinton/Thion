@@ -7,7 +7,7 @@ buildings={}
 PreConditions=[]
 MainFlow=[]
 PostConditions=[]
-
+PLACEHOLDER=None
 
 while True:
 	line=inputfile.readline().strip()
@@ -67,31 +67,26 @@ while True:
 				players[player]=[authority,None,messages]
 
 	elif not re.search("^#",line):
-		print(f"\nUnexpected error:",line,'\n')
+		print("\nUnexpected error:",line,'\n')
 
-for building in buildings:
-	print(building)
+#for building in buildings:
+#	print(building)
 
-for player in players:
-	print(player)
+#for player in players:
+#	print(player)
 
 print("------------------")
 for string in PreConditions:
 	action=string.pop(0)
-	print(action)
 
 	if action=="locked":
 		building=string.pop(0)
 		if re.search("\[.*\]",building):
 			building,room=building.split('[');room=room.strip(']')
-			print(room,"in",building)
-			print(room)
 			buildings[building][2][room][1]=True
 		else:
-			print(building)
 			buildings[building][1]=True
-		print(buildings[building])
-		print("------------------")
+		print(buildings[building]);print("------------------")
 	
 	if action=="unlocked":
 		building=string.pop(0)
@@ -100,55 +95,109 @@ for string in PreConditions:
 			buildings[building][2][room][1]=False
 		else:
 			buildings[building][1]=False
-		print(buildings[building])
-		print("------------------")
+		print(buildings[building]);print("------------------")
 
-print("------------------")
+print("MainFlow");print("------------------")
 unit=0
 for string in MainFlow:
+	print(string)
 	action=string.pop(0)
-	print(action)
 
-	if action=="enter":
+	if action=="enter" or action=="exit" or action=="lock" or action=="unlock":
+		#[player,facility]
 		player=string.pop(0)
-		print(player)
 		facility=string.pop(0)
-		print(facility)
-		#players[player][1]=building
-		print(players[player])
-		if facility in buildings:
-			print()
+		empty=False
+		if re.search("\[.*\]",facility):
+			building,room=facility.split('[');room=room.strip(']')
+			
+			if action=="enter" and int(buildings[building][2][room][0])<1:
+				buildings[building][2][room][0]=players[player][0]	#Set Authority of room
+			
+			elif action=="exit":
+				players[player][1]=building	
+				for p in players:
+					if players[p][1]==facility:
+						empty=False;break
+				if empty:
+					buildings[building][2][room][0]=0
+			
+			elif action=="lock":
+				PLACEHOLDER
+				if 
+			
+			elif action=="unlock":
+				PLACEHOLDER
 		else:
-			for building in buildings:
-				if facility in buildings[building][2]:
-					buildings[building][2][room][2]=building+'['+facility+']'+
-					break
-					
-		print("------------------")
+			
+			if action=="enter" and int(buildings[facility][0])<1:
+				buildings[facility][0]=players[player][0]
+			
+			elif action=="exit":
+				players[player][1]=None
+				for p in players:
+					if players[p][1]==facility:
+						empty=False;break
+				if empty:
+					buildings[facility][0]=0
+			
+			elif action=="lock":
+				PLACEHOLDER
+			
+			elif action=="unlock":
+				PLACEHOLDER
+
+		if action=="enter":
+			players[player][1]=facility
+		print(building,':',buildings[building]);print(player,':',players[player]);print("------------------")
+	
+	else:
+		print("Action not found");print("------------------")
+	unit+=1
+print("Total units:",unit)
+'''		
+	elif action=="enter":
+		player=string.pop(0)
+		facility=string.pop(0)
+		if re.search("\[.*\]",facility):
+			building,room=facility.split('[');room=room.strip(']')
+			if int(buildings[building][2][room][0])<1:
+				buildings[building][2][room][0]=players[player][0]
+		else:
+			if int(buildings[facility][0])<1:
+				buildings[facility][0]=players[player][0]
+		players[player][1]=facility
+		print(buildings[building]);print(players[player]);print("------------------")
 
 	elif action=="exit":
 		player=string.pop(0)
-		print(player)
-		building=string.pop(0)
-		print(building)
-		print("------------------")
-
-	elif action=="lock":
-		player=string.pop(0)
-		print(player)
-		building=string.pop(0)
-		print(building)
-		print("------------------")
-
-	elif action=="unlock":
-		player=string.pop(0)
-		print(player)
-		building=string.pop(0)
-		print(building)
-		print("------------------")
-
-	else:
-		print("Action not found")
-		print("------------------")
-	unit+=1
-print("Total units:",unit)
+		facility=string.pop(0)
+		empty=True
+		if re.search("\[.*\]",facility):
+			building,room=facility.split('[');room=room.strip(']')
+			players[player][1]=building	
+			for p in players:
+				if players[p][1]==facility:
+					empty=False;break
+			if empty:
+				buildings[building][2][room][0]=0
+		else:
+			players[player][1]=None
+			for p in players:
+				if players[p][1]==facility:
+					empty=False;break
+			if empty:
+				buildings[facility][0]=0
+		print(buildings[building]);print(players[player]);print("------------------")
+'''
+#		if facility in buildings:
+#			if int(buildings[facility][0])<1:
+#				buildings[facility][0]=players[player][0]
+#				print(buildings[facility])
+#		else:
+#			for building in buildings:
+#				if facility in buildings[building][2]:
+#					if int(buildings[building][2][facility][0])<1:
+#						buildings[building][2][facility][0]=players[player][0]
+#						print(buildings[building])
+#					break

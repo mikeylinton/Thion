@@ -1,5 +1,5 @@
 [Environment]
-Building A[Meeting room];
+Building A[Meeting room,Break room];
 Building B[Meeting room];
 [Players]
 Alice(3)[Secret Message(2)];Bob(1);Eve(3);
@@ -8,15 +8,20 @@ locked(Building A);
 locked(Building A[Meeting room]);
 [MainFlow]
 unlock(Alice,Building A);
+#
 enter(Bob,Building A);
 enter(Alice,Building A);
-unlock(Alice,Meeting room);
-enter(Bob,Meeting room);
-enter(Alice,Meeting room);
+#
+unlock(Alice,Building A[Meeting room]);
+#
+enter(Bob,Building A[Meeting room]);
+enter(Alice,Building A[Meeting room]);
 enter(Eve,Building A[Meeting room]);
+#
 exit(Bob,Building A);
-exit(Alice,Meeting room);
-exit(Eve,Meeting room);
-lock(Alice,Meeting room);
+exit(Alice,Building A[Meeting room]);
+exit(Eve,Building A[Meeting room]);
+#
+lock(Alice,Building A[Meeting room]);
 [PostConditions]
-locked(Meeting room);
+locked(Building A[Meeting room]);
