@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{arrows.meta}
+\usepackage{nopageno}
+\newcommand\unit{0.2675}
+\newcommand\step{\unit*6}
+\newcommand\yMax{\step*14}
+\newcommand\xMax{\step*14}
+\newcommand\labelSpacing{\step*0.4}
+\newcommand\yDomain{\yMax-\unit}
+\newcommand\xDomain{\xMax-\step/2}
+\newcommand\xDLock{\xDomain-\step/2}
+\newcommand\flowSpacing{\step*4}
+\newcommand\xAlice{\xDLock-\step*3}
+\newcommand\xBob{\xDLock-\step*2}
+\newcommand\xEve{\xDLock-\step*1}
+\begin{document}
+\hspace*{-50mm} \vspace*{-100mm}
+\tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
+\begin{tikzpicture}[>=latex]
+\draw(\xAlice,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Alice(3)$]{};
+\draw(\xBob,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Bob(1)$]{};
+\draw(\xEve,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Eve(3)$]{};
+\draw[dotted](\xAlice,\yMax)--(\xAlice,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{};
+\draw[dotted](\xBob,\yMax)--(\xBob,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{};
+\draw[dotted](\xEve,\yMax)--(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{};
+\draw(\xAlice,\yMax-\step*1)--(\xAlice,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{};
+\draw(\xEve,\yMax-\step*3)--(\xEve,\yMax-\step*4);
+\draw(\xAlice-\labelSpacing,\yMax-\step*4)node[label=above:$Msg(2)$]{};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*4)--(\xEve,\yMax-\step*4);
+\draw(\xBob,\yMax-\step*2)--(\xBob,\yMax-\step*5);
+\draw[dotted](\xBob,\yMax-\step*5)--(\xMax,\yMax-\step*5);
+\draw(\xEve,\yMax-\step*3)--(\xEve,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{};
+\draw(\xAlice,\yMax-\step*1)--(\xAlice,\yMax-\step*7);
+\draw(\xEve-\labelSpacing,\yMax-\step*7)node[label=above:$Msg(2)$]{};
+\draw[-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*7)--(\xAlice,\yMax-\step*7);
+\draw(\xBob,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{};
+\draw[dotted](\xMax,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{};
+\draw(\xAlice,\yMax-\step*1)--(\xAlice,\yMax-\step*10);
+\draw[dotted](\xAlice,\yMax-\step*10)--(\xMax,\yMax-\step*10);
+\draw(\xEve,\yMax-\step*3)--(\xEve,\yMax-\step*11);
+\draw[dotted](\xEve,\yMax-\step*11)--(\xMax,\yMax-\step*11);
+\draw(\xBob,\yMax-\step*9)--(\xBob,\yMax-\step*12);
+\draw[dotted](\xBob,\yMax-\step*12)--(\xMax,\yMax-\step*12);
+\end{tikzpicture}
+\end{document}
