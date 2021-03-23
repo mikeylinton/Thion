@@ -7,7 +7,7 @@ args=parser.parse_args()
 
 PLACEHOLDER=None;section=None
 Players={}
-Environment={}
+Environment=[]
 PreConditions=[];MainFlow=[];PostConditions=[]
 fileOut=[]
 
@@ -36,7 +36,9 @@ while True:
 		items.remove('')
 		for item in items:
 			if section=="Environment":
-				Environment[item]=0	#Default authority level
+				i=len(Environment)
+				Environment.append([])
+				Environment[i]=[item,0,"(\\x"+item+"Lock,\\yMax)"]
 #				Domain,SubDomains=item.split('[');Domain=re.sub('\]$','',Domain)
 #				head,tail=SubDomains.split(',');tail=re.sub('\]$','',tail)
 				'''building,rooms=item.split('[');rooms=rooms.strip(']')
@@ -64,7 +66,7 @@ while True:
 						Messages[name]=mAuthority
 				else:
 					player,pAuthority=item.split('(');pAuthority=pAuthority.strip(')')
-				Players[player]=[pAuthority,None,Messages,None]
+				Players[player]=[pAuthority,None,Messages,"(\\x"+player+",\\yMax)"]
 
 	elif not re.search("^#",line):
 		print("\nUnexpected error:",line,'\n')
@@ -72,10 +74,10 @@ while True:
 fileOut.extend(
 	(
 	"\\documentclass{article}",
-	"\n\\usepackage{tikz}",
-	"\n\\usetikzlibrary{shapes.misc}",
-	"\n\\usetikzlibrary{arrows.meta}",
-	"\n\\usepackage{nopageno}",
+	"\\usepackage{tikz}",
+	"\\usetikzlibrary{shapes.misc}",
+	"\\usetikzlibrary{arrows.meta}",
+	"\\usepackage{nopageno}",
 	"\n\\newcommand\\unit{0.2675}",
 	"\n\\newcommand\\step{\\unit*6}",
 	"\n\\newcommand\\yMax{\\step*14}",
@@ -86,18 +88,18 @@ fileOut.extend(
 )
 
 for domain in Environment:
-fileOut.extend(
-	(
-	"\n\\newcommand\\y"+domain+"{\\yMax-\\unit}",
-	"\n\\newcommand\\x"+domain+"{\\xMax-\\step/2}",
-	"\n\\newcommand\\x"+domain+"Lock{\\x"+domain+"-\\step/2}"
+	fileOut.extend(
+		(
+		"\n\\newcommand\\y"+domain[0]+"{\\yMax-\\unit}",
+		"\n\\newcommand\\x"+domain[0]+"{\\xMax-\\step/2}",
+		"\n\\newcommand\\x"+domain[0]+"Lock{\\x"+domain[0]+"-\\step/2}"
+		)
 	)
-)
 
 N=len(Players)
 fileOut.append("\n\\newcommand\\flowSpacing{\\step*"+str((N+1))+"}")
 for player in Players:
-	fileOut.append("\n\\newcommand\\x"+player+"{\\xDLock-\\step*"+str(N)+"}");N-=1
+	fileOut.append("\n\\newcommand\\x"+player+"{\\xBuildingALock-\\step*"+str(N)+"}");N-=1
 
 fileOut.extend(
 	(	
@@ -109,27 +111,28 @@ fileOut.extend(
 )
 
 for player in Players:
-	fileOut.append("\n\\draw(\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex,label=above:$"+player+"("+Players[player][0]+")$]{};")
+	fileOut.append("\n\\draw(\\x"+player+",\\yMax)node[label=above:$"+player+"("+Players[player][0]+")$]{};")
 
-step=0
+step=1
 for items in MainFlow:
-	print(items)
-	step+=1
+#	print(items)
 	action=items.pop(0)
 
 	if action=="enter":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Players[player][3]==None:
-			fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)--(\\x"+player+",\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{};")
+		if Players[player][3]=="(\\x"+player+",\\yMax)":
+			fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
 		else:
 			fileOut.extend(
 				(
 				"\n\\draw"+Players[player][3]+"node[circle,fill,inner sep=0.5ex]{};",
-        		"\n\\draw[dotted](\\xMax,\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{};"
+        		"\n\\draw[dotted](\\xMax,\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};"
 				)
 			)
 		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+
 	elif action=="exit":
 		player=items.pop(0)
 		domain=items.pop(0)
@@ -139,35 +142,65 @@ for items in MainFlow:
         	"\n\\draw[dotted](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\xMax,\\yMax-\\step*"+str(step)+");"
 			)
 		)
-	elif action=="share" or action=="share.enc":
-		source=items.pop(0).split('.')
-		sender=source[0]
-		originSender=source[len(source)-2]
-		message=source[len(source)-1]
-		print(len(source))
+		Players[player][3]="(\\xMax,\\yMax-\\step*"+str(step)+")"
+
+	elif action=="share":
+		sender=items.pop(0)
+		message=items.pop(0)
 		receiver=items.pop(0)
+		fileOut.append("\n\\draw[")
+		if re.search("^enc(.*)$",message):
+			print(message)
+			message=message.strip("enc[").strip("]")
+			fileOut.append("dotted,")
 		fileOut.extend(
 			(
-			"\n\\draw"+Players[sender][3]+"--(\\x"+sender+",\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{};",
+			"-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
+			"\n\\draw"+Players[sender][3]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+sender+",\\yMax-\\step*"+str(step)+");",
         	"\n\\draw"+Players[receiver][3]+"--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
-        	"\n\\draw(\\x"+sender+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Msg("+Players[originSender][2][message]+")$]{};"
+        	"\n\\draw(\\x"+sender+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Msg("+Players[sender][2][message]+")$]{};"
 			)
 		)
-		if re.search(".enc$",action):
-			fileOut.append("\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");")
-		else:
-			fileOut.append("\n\\draw[-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");")
-	elif action=="lock":
+		Players[receiver][3]="(\\x"+receiver+",\\yMax-\\step*"+str(step)+")"
+		Players[sender][3]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
+	elif action=="lock" or action=="unlock":
 		player=items.pop(0)
 		domain=items.pop(0)
+		N=0
+		for e in Environment:
+			if e[0]==domain: break
+			else: N+=1
+		fileOut.append("\n\\draw")
+		if action=="lock": fileOut.append("[dashed]")
 		fileOut.extend(
 			(
-			"\n\\draw[dashed](\\xDLock,\\yMax-\step*0)--(\\xDLock,\\yMax-\\step*"+str(step)+");",
-			"\n\\draw(\\xAlice,\\yMax-\\step*4)--(\\xAlice,\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{};",
-			"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\xAlice,\\yMax-\\step*"+str(step)+")--(\\xDLock,\\yMax-\\step*"+str(step)+");",
-			"\n\\draw(\\xAlice-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Lock$]{};"
+			Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+			"\n\\draw"+Players[player][3]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
+			"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+			"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$"
 			)
 		)
+		if action=="lock": 
+			fileOut.append("Lock$]{};")
+			Environment[0][1]=Players[player][0]
+		else: 
+			fileOut.append("Unlock$]{};")
+			Environment[0][1]=0
+		Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+	step+=1
+for player in Players: 
+	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
+fileOut.append("\n\\draw")
+if int(Environment[0][1])==0: fileOut.append("[dashed]")
+fileOut.extend(
+	(
+	Environment[0][2]+"--(\\x"+Environment[0][0]+"Lock,\\yMax-\\step*"+str(step)+");",	 
+	"\n\\draw(\\x"+Environment[0][0]+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
+	"\n\\draw[very thick] (\\x"+Environment[0][0]+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+Environment[0][0]+",\\y"+Environment[0][0]+");",
+	"\n\\draw(\\x"+Environment[0][0]+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
+	)
+)
 
 fileOut.extend(
 	(
@@ -175,8 +208,8 @@ fileOut.extend(
 	"\n\\end{document}"
 	)
 )
-for e in fileOut:
-	print(e)
+#for e in fileOut:
+#	print(e)
 
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:

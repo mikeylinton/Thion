@@ -1,85 +1,58 @@
 \documentclass{article}\usepackage{tikz}\usetikzlibrary{shapes.misc}\usetikzlibrary{arrows.meta}\usepackage{nopageno}
-%---
 \newcommand\unit{0.2675}
 \newcommand\step{\unit*6}
-%---
 \newcommand\yMax{\step*14}
 \newcommand\xMax{\step*14}
-%---
-\newcommand\xAlice{\xDLock-\step*3}
-\newcommand\xBob{\xDLock-\step*2}
-\newcommand\xEve{\xDLock-\step}
+\newcommand\xAlice{\xBuildingA-\step*3}
+\newcommand\xBob{\xBuildingA-\step*2}
+\newcommand\xEve{\xBuildingA-\step}
 \newcommand\flowSpacing{\step*4}
 \newcommand\labelSpacing{\step*0.4}
-%---
-\newcommand\yDomain{\yMax-\unit}
+\newcommand\yBuildingA{\yMax-\unit}
 \newcommand\xDomain{\xMax-\step/2}
-\newcommand\xDLock{\xDomain-\step/2}
-%---
+\newcommand\xBuildingA{\xDomain-\step/2}
 \begin{document}
     \hspace*{-50mm} \vspace*{-100mm}
     \tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
     \begin{tikzpicture}[>=latex]
-%        \draw[step=1.0,black,thin,xshift=0.5cm,yshift=1cm] (0,0) grid (\xMax,\yMax);
-%---    Players    
         \draw(\xAlice,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Alice(3)$]{};
         \draw(\xBob,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Bob(1)$]{};
         \draw(\xEve,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Eve(3)$]{};
-%---    Players Enter Building A       
-%        \draw[dashed](\xDLock,\yMax-\step*0)--(\xDLock,\yMax-\step*1);
         \draw[dotted](\xAlice,\yMax-\step*0)--(\xAlice,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{};        
-%---        
-%        \draw[dashed](\xDLock,\yMax-\step*1)--(\xDLock,\yMax-\step*2);
         \draw[dotted](\xBob,\yMax-\step*0)--(\xBob,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{};
-%---
-%        \draw[dashed](\xDLock,\yMax-\step*2)--(\xDLock,\yMax-\step*3);
         \draw[dotted](\xEve,\yMax)--(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{};
-%---    Alice -- MSG(2) > Eve
-%        \draw[dashed](\xDLock,\yMax-\step*3)--(\xDLock,\yMax-\step*4);
         \draw(\xAlice,\yMax-\step)--(\xAlice,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{};
         \draw(\xEve,\yMax-\step*3)--(\xEve,\yMax-\step*4);
         \draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*4)--(\xEve,\yMax-\step*4);
         \draw(\xAlice-\labelSpacing,\yMax-\step*4)node[label=above:$Msg(2)$]{};
-%---    Bob temp exit
         \draw[dotted](\xBob,\yMax-\step*2)--(\xBob,\yMax-\step*5);
         \draw[dotted](\xBob,\yMax-\step*5)--(\xMax,\yMax-\step*5);
-%---    Alice LOCK Domain
-        \draw[dashed](\xDLock,\yMax-\step*0)--(\xDLock,\yMax-\step*6);
+        \draw[dashed](\xBuildingA,\yMax-\step*0)--(\xBuildingA,\yMax-\step*6);
         \draw(\xAlice,\yMax-\step*4)--(\xAlice,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{};
-        \draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*6)--(\xDLock,\yMax-\step*6);
+        \draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*6)--(\xBuildingA,\yMax-\step*6);
         \draw(\xAlice-\labelSpacing,\yMax-\step*6)node[label=above:$Lock$]{};
-%---
-%        \draw(\xDLock,\yMax-\step*6)--(\xDLock,\yMax-\step*7);
-%---
         \draw(\xEve,\yMax-\step*4)--(\xEve,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{};
         \draw(\xAlice,\yMax-\step*6)--(\xAlice,\yMax-\step*7);
         \draw[-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*7)--(\xAlice,\yMax-\step*7);
         \draw(\xEve-\labelSpacing,\yMax-\step*7)node[label=above:$Msg(2)$]{};
-%---    Eve UNLOCK Domain
-        \draw(\xDLock,\yMax-\step*6)--(\xDLock,\yMax-\step*8);
+        \draw(\xBuildingA,\yMax-\step*6)--(\xBuildingA,\yMax-\step*8);
         \draw(\xEve,\yMax-\step*7)--(\xEve,\yMax-\step*8)node[circle,fill,inner sep=0.5ex]{};
-        \draw[dotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*8)--(\xDLock,\yMax-\step*8);
+        \draw[dotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*8)--(\xBuildingA,\yMax-\step*8);
         \draw(\xEve-\labelSpacing,\yMax-\step*8)node[label=above:$Unlock$]{};
-%---    Bob RE enter
         \draw(\xMax,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{};
         \draw[dotted](\xMax,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{};
-%---    Alice exit
         \draw[dotted](\xAlice,\yMax-\step*7)--(\xAlice,\yMax-\step*10);
         \draw[dotted](\xAlice,\yMax-\step*10)--(\xMax,\yMax-\step*10);
-%---
         \draw[dotted](\xEve,\yMax-\step*8)--(\xEve,\yMax-\step*11);
         \draw[dotted](\xEve,\yMax-\step*11)--(\xMax,\yMax-\step*11);
-%---
         \draw[dotted](\xBob,\yMax-\step*9)--(\xBob,\yMax-\step*12);
         \draw[dotted](\xBob,\yMax-\step*12)--(\xMax,\yMax-\step*12);
-%---
         \draw(\xMax,\yMax-\step*10)node[cross]{}; 
         \draw(\xMax,\yMax-\step*11)node[cross]{}; 
         \draw(\xMax,\yMax-\step*12)node[cross]{}; 
-        \draw(\xDLock,\yMax-\step*13)node[rectangle,fill,inner sep=0.5ex]{};
-        \draw[very thick] (\xDomain-\flowSpacing-\unit*2,\yMax-\step*13+\unit) rectangle (\xDomain,\yDomain);
-        \draw[dashed](\xDLock,\yMax-\step*8)--(\xDLock,\yMax-\step*13);
-        \draw(\xDLock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
-%---
+        \draw(\xBuildingA,\yMax-\step*13)node[rectangle,fill,inner sep=0.5ex]{};
+        \draw[very thick] (\xDomain-\flowSpacing-\unit*2,\yMax-\step*13+\unit) rectangle (\xDomain,\yBuildingA);
+        \draw[dashed](\xBuildingA,\yMax-\step*8)--(\xBuildingA,\yMax-\step*13);
+        \draw(\xBuildingA,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
     \end{tikzpicture} 
 \end{document} 
