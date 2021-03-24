@@ -66,7 +66,7 @@ while True:
 						Messages[name]=mAuthority
 				else:
 					player,pAuthority=item.split('(');pAuthority=pAuthority.strip(')')
-				Players[player]=[pAuthority,None,Messages,"(\\x"+player+",\\yMax)"]
+				Players[player]=[pAuthority,Messages,"(\\x"+player+",\\yMax)",None,None]
 
 	elif not re.search("^#",line):
 		print("\nUnexpected error:",line,'\n')
@@ -104,7 +104,10 @@ for player in Players:
 fileOut.extend(
 	(	
 	"\n\\begin{document}",
-    "\n\\hspace*{-50mm} \\vspace*{-100mm}",
+	"\n\\pdfpageheight 450mm",
+  	"\n\\pdfpagewidth 210mm",
+    "\n\\hspace*{-50mm}"
+	"\\vspace*{-100mm}",
     "\n\\tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}",
     "\n\\begin{tikzpicture}[>=latex]"
 	)
@@ -121,75 +124,99 @@ for items in MainFlow:
 	if action=="enter":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Players[player][3]=="(\\x"+player+",\\yMax)":
-			fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
-		else:
-			fileOut.extend(
-				(
-				"\n\\draw"+Players[player][3]+"node[circle,fill,inner sep=0.5ex]{};",
-        		"\n\\draw[dotted](\\xMax,\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};"
+		if Environment[0][1]==0 and Players[player][4]!=domain:
+			if Players[player][3]==None:
+				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
+			else:
+				fileOut.extend(
+					(
+					"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{};",
+					"\n\\draw[dotted](\\xMax,\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};"
+					)
 				)
-			)
-		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-
+			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+			Players[player][4]=domain
+		elif int(Environment[0][1])>0:
+			print("A Player cannot Enter a Locked Domain.");step-=1
+		elif Players[player][4]==domain:
+			print("A Player cannot Enter a Domain they are already in.");step-=1
 	elif action=="exit":
 		player=items.pop(0)
 		domain=items.pop(0)
-		fileOut.extend(
-			(
-			"\n\\draw"+Players[player][3]+"--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
-        	"\n\\draw[dotted](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\xMax,\\yMax-\\step*"+str(step)+");"
+		if Environment[0][1]==0 and Players[player][4]!=None:
+			fileOut.extend(
+				(
+				"\n\\draw"+Players[player][2]+"--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dotted](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\xMax,\\yMax-\\step*"+str(step)+");"
+				)
 			)
-		)
-		Players[player][3]="(\\xMax,\\yMax-\\step*"+str(step)+")"
-
+			Players[player][3]=Players[player][2]="(\\xMax,\\yMax-\\step*"+str(step)+")"
+			Players[player][4]=None
+		elif int(Environment[0][1])>0:
+			print("A Player cannot Exit a Locked Domain.");step-=1
+		elif Players[player][4]==None:
+			print("A Player cannot Exit outside the Environment.");step-=1
 	elif action=="share":
 		sender=items.pop(0)
 		message=items.pop(0)
 		receiver=items.pop(0)
-		fileOut.append("\n\\draw[")
-		if re.search("^enc(.*)$",message):
-			print(message)
-			message=message.strip("enc[").strip("]")
-			fileOut.append("dotted,")
-		fileOut.extend(
-			(
-			"-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
-			"\n\\draw"+Players[sender][3]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+sender+",\\yMax-\\step*"+str(step)+");",
-        	"\n\\draw"+Players[receiver][3]+"--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
-        	"\n\\draw(\\x"+sender+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Msg("+Players[sender][2][message]+")$]{};"
+		if Players[sender][4]==Players[receiver][4] and sender!=receiver and Players[sender][4]!=None:
+			fileOut.append("\n\\draw[")
+			if re.search("^enc(.*)$",message):
+				message=message.strip("enc[").strip("]")
+				fileOut.append("dotted,")
+			fileOut.extend(
+				(
+				"-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
+				"\n\\draw"+Players[sender][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+sender+",\\yMax-\\step*"+str(step)+");",
+				"\n\\draw"+Players[receiver][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
+				"\n\\draw(\\x"+sender+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Msg("+Players[sender][1][message]+")$]{};"
+				)
 			)
-		)
-		Players[receiver][3]="(\\x"+receiver+",\\yMax-\\step*"+str(step)+")"
-		Players[sender][3]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
+			Players[sender][3]=Players[sender][2]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
+			Players[receiver][3]="(\\x"+receiver+",\\yMax-\\step*"+str(step)+")"
+			Players[receiver][1][message]=Players[sender][1][message]
+		elif Players[sender][4]!=Players[receiver][4]:
+			print("Both Players must be in the same Domain to Share a Message.");step-=1
+		elif sender==receiver:
+			print("A player cannot share a Message to themselves.");step-=1
+		elif Players[sender][4]==None:
+			print("Both Players must be in a Domain to share a Message.");step-=1
 	elif action=="lock" or action=="unlock":
 		player=items.pop(0)
 		domain=items.pop(0)
-		N=0
-		for e in Environment:
-			if e[0]==domain: break
-			else: N+=1
-		fileOut.append("\n\\draw")
-		if action=="lock": fileOut.append("[dashed]")
-		fileOut.extend(
-			(
-			Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
-			"\n\\draw"+Players[player][3]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
-			"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
-			"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$"
+		if Players[player][4]==domain:	
+			N=0
+			for e in Environment:
+				if e[0]==domain: break
+				else: N+=1
+			fileOut.append("\n\\draw")
+			if action=="lock": fileOut.append("[dashed]")
+			fileOut.extend(
+				(
+				Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
+				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$"
+				)
 			)
-		)
-		if action=="lock": 
-			fileOut.append("Lock$]{};")
-			Environment[0][1]=Players[player][0]
-		else: 
-			fileOut.append("Unlock$]{};")
-			Environment[0][1]=0
-		Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
-		Players[player][3]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+			if action=="lock": 
+				fileOut.append("Lock$]{};")
+				Environment[0][1]=Players[player][0]
+			else: 
+				fileOut.append("Unlock$]{};")
+				Environment[0][1]=0
+			Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+		else:
+			if action=="lock":
+				print("A Player must be in the same Domain to Lock it.")
+			else:
+				print("A Player must be in the same Domain to Unlock it.")
+			step-=1
 	step+=1
-for player in Players: 
+for player in Players:
+	if Players[player][3]==None: Players[player][3] =Players[player][2]
 	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
 fileOut.append("\n\\draw")
 if int(Environment[0][1])==0: fileOut.append("[dashed]")

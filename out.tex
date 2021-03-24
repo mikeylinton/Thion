@@ -7,37 +7,82 @@
 \newcommand\yBuildingA{\yMax-\unit}
 \newcommand\xBuildingA{\xMax-\step/2}
 \newcommand\xBuildingALock{\xBuildingA-\step/2}
-\newcommand\flowSpacing{\step*4}
-\newcommand\xAlice{\xBuildingALock-\step*3}
-\newcommand\xBob{\xBuildingALock-\step*2}
+\newcommand\flowSpacing{\step*6}
+\newcommand\xAlice{\xBuildingALock-\step*5}
+\newcommand\xBob{\xBuildingALock-\step*4}
+\newcommand\xCarol{\xBuildingALock-\step*3}
+\newcommand\xDevan{\xBuildingALock-\step*2}
 \newcommand\xEve{\xBuildingALock-\step*1}
 \begin{document}
-\hspace*{-50mm} \vspace*{-100mm}
+\pdfpageheight 450mm
+\pdfpagewidth 210mm
+\hspace*{-50mm}\vspace*{-100mm}
 \tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
 \begin{tikzpicture}[>=latex]
 \draw(\xAlice,\yMax)node[label=above:$Alice(3)$]{};
 \draw(\xBob,\yMax)node[label=above:$Bob(1)$]{};
+\draw(\xCarol,\yMax)node[label=above:$Carol(0)$]{};
+\draw(\xDevan,\yMax)node[label=above:$Devan(4)$]{};
 \draw(\xEve,\yMax)node[label=above:$Eve(3)$]{};
 \draw[dotted](\xBob,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*1){};
 \draw[dotted](\xAlice,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*2){};
-\draw[-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*3)--(\xBob,\yMax-\step*3);
+\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*3)--(\xBob,\yMax-\step*3);
 \draw(\xAlice,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*3);
-\draw(\xBob,\yMax-\step*1)--(\xBob,\yMax-\step*3);
+\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*3);
 \draw(\xAlice-\labelSpacing,\yMax-\step*3)node[label=above:$Msg(1)$]{};
 \draw[dashed](\xBuildingALock,\yMax)--(\xBuildingALock,\yMax-\step*4);
-\draw(\xBob,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*4){};
+\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*4){};
 \draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*4)--(\xBuildingALock,\yMax-\step*4);
 \draw(\xBob-\labelSpacing,\yMax-\step*4)node[label=above:$Lock$]{};
 \draw(\xBuildingALock,\yMax-\step*4)--(\xBuildingALock,\yMax-\step*5);
 \draw(\xAlice,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*5){};
 \draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*5)--(\xBuildingALock,\yMax-\step*5);
 \draw(\xAlice-\labelSpacing,\yMax-\step*5)node[label=above:$Unlock$]{};
-\draw(\xAlice,\yMax-\step*5)node[cross]{};
-\draw(\xBob,\yMax-\step*4)node[cross]{};
-\draw(\xEve,\yMax)node[cross]{};
-\draw[dashed](\xBuildingALock,\yMax-\step*5)--(\xBuildingALock,\yMax-\step*6);
-\draw(\xBuildingALock,\yMax-\step*6)node[rectangle,fill,inner sep=0.5ex]{};
-\draw[very thick] (\xBuildingA-\flowSpacing-\unit*2,\yMax-\step*6+\unit) rectangle (\xBuildingA,\yBuildingA);
+\draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*6)--(\xAlice,\yMax-\step*6);
+\draw(\xBob,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*6);
+\draw(\xAlice,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*6);
+\draw(\xBob-\labelSpacing,\yMax-\step*6)node[label=above:$Msg(1)$]{};
+\draw[dotted](\xEve,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*7){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*8)--(\xEve,\yMax-\step*8);
+\draw(\xAlice,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*8);
+\draw(\xEve,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*8);
+\draw(\xAlice-\labelSpacing,\yMax-\step*8)node[label=above:$Msg(1)$]{};
+\draw(\xBob,\yMax-\step*6)--(\xBob,\yMax-\step*9);
+\draw[dotted](\xBob,\yMax-\step*9)--(\xMax,\yMax-\step*9);
+\draw[dashed](\xBuildingALock,\yMax-\step*5)--(\xBuildingALock,\yMax-\step*10);
+\draw(\xEve,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*10){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*10)--(\xBuildingALock,\yMax-\step*10);
+\draw(\xEve-\labelSpacing,\yMax-\step*10)node[label=above:$Lock$]{};
+\draw(\xBuildingALock,\yMax-\step*10)--(\xBuildingALock,\yMax-\step*11);
+\draw(\xEve,\yMax-\step*10)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*11){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*11)--(\xBuildingALock,\yMax-\step*11);
+\draw(\xEve-\labelSpacing,\yMax-\step*11)node[label=above:$Unlock$]{};
+\draw(\xMax,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{};
+\draw[dotted](\xMax,\yMax-\step*12)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*12){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*13)--(\xAlice,\yMax-\step*13);
+\draw(\xBob,\yMax-\step*12)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*13);
+\draw(\xAlice,\yMax-\step*8)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*13);
+\draw(\xBob-\labelSpacing,\yMax-\step*13)node[label=above:$Msg(1)$]{};
+\draw[-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*14)--(\xEve,\yMax-\step*14);
+\draw(\xAlice,\yMax-\step*8)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*14);
+\draw(\xEve,\yMax-\step*11)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*14);
+\draw(\xAlice-\labelSpacing,\yMax-\step*14)node[label=above:$Msg(1)$]{};
+\draw(\xAlice,\yMax-\step*14)--(\xAlice,\yMax-\step*15);
+\draw[dotted](\xAlice,\yMax-\step*15)--(\xMax,\yMax-\step*15);
+\draw(\xEve,\yMax-\step*11)--(\xEve,\yMax-\step*16);
+\draw[dotted](\xEve,\yMax-\step*16)--(\xMax,\yMax-\step*16);
+\draw[dashed](\xBuildingALock,\yMax-\step*11)--(\xBuildingALock,\yMax-\step*17);
+\draw(\xBob,\yMax-\step*13)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*17){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*17)--(\xBuildingALock,\yMax-\step*17);
+\draw(\xBob-\labelSpacing,\yMax-\step*17)node[label=above:$Lock$]{};
+\draw(\xMax,\yMax-\step*15)node[cross]{};
+\draw(\xBob,\yMax-\step*17)node[cross]{};
+\draw(\xCarol,\yMax)node[cross]{};
+\draw(\xDevan,\yMax)node[cross]{};
+\draw(\xMax,\yMax-\step*16)node[cross]{};
+\draw(\xBuildingALock,\yMax-\step*17)--(\xBuildingALock,\yMax-\step*18);
+\draw(\xBuildingALock,\yMax-\step*18)node[rectangle,fill,inner sep=0.5ex]{};
+\draw[very thick] (\xBuildingA-\flowSpacing-\unit*2,\yMax-\step*18+\unit) rectangle (\xBuildingA,\yBuildingA);
 \draw(\xBuildingALock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
 \end{tikzpicture}
 \end{document}
