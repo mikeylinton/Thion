@@ -37,8 +37,8 @@ while True:
 		for item in items:
 			if section=="Environment":
 				i=len(Environment)
-				Environment.append([])
-				Environment[i]=[item,0,"(\\x"+item+"Lock,\\yMax)"]
+				Environment.append({})
+				Environment[i][item]=[0,"(\\x"+item+"Lock,\\yMax)"]
 #				Domain,SubDomains=item.split('[');Domain=re.sub('\]$','',Domain)
 #				head,tail=SubDomains.split(',');tail=re.sub('\]$','',tail)
 				'''building,rooms=item.split('[');rooms=rooms.strip(']')
@@ -87,12 +87,12 @@ fileOut.extend(
 	)
 )
 
-for domain in Environment:
+for domain in Environment[0]:
 	fileOut.extend(
 		(
-		"\n\\newcommand\\y"+domain[0]+"{\\yMax-\\unit}",
-		"\n\\newcommand\\x"+domain[0]+"{\\xMax-\\step/2}",
-		"\n\\newcommand\\x"+domain[0]+"Lock{\\x"+domain[0]+"-\\step/2}"
+		"\n\\newcommand\\y"+domain+"{\\yMax-\\unit}",
+		"\n\\newcommand\\x"+domain+"{\\xMax-\\step/2}",
+		"\n\\newcommand\\x"+domain+"Lock{\\x"+domain+"-\\step/2}"
 		)
 	)
 
@@ -116,15 +116,36 @@ fileOut.extend(
 for player in Players:
 	fileOut.append("\n\\draw(\\x"+player+",\\yMax)node[label=above:$"+player+"("+Players[player][0]+")$]{};")
 
-step=1
+for items in PreConditions:
+	state=items.pop(0)
+
+	if state=="location":
+		player=items.pop(0)
+		domain=items.pop(0)
+		if Players[player][4]==None:
+			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*1)"
+			Players[player][4]=domain
+	
+	if state=="locked":
+		player=items.pop(0)
+		domain=items.pop(0)
+		N=0
+		for Domains in Environment:
+			if domain in Domains: break
+			else: N+=1
+		if Players[player][4]==domain:
+			Environment[N][domain][0]=Players[player][0]
+
+if len(PreConditions)>0: step=2
+else: step=1
+
 for items in MainFlow:
-#	print(items)
 	action=items.pop(0)
 
 	if action=="enter":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Environment[0][1]==0 and Players[player][4]!=domain:
+		if Environment[0][domain][0]==0 and Players[player][4]!=domain:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
 			else:
@@ -136,26 +157,27 @@ for items in MainFlow:
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=domain
-		elif int(Environment[0][1])>0:
+		elif int(Environment[0][domain][0])>0:
 			print("A Player cannot Enter a Locked Domain.");step-=1
 		elif Players[player][4]==domain:
 			print("A Player cannot Enter a Domain they are already in.");step-=1
 	elif action=="exit":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Environment[0][1]==0 and Players[player][4]!=None:
+		if Environment[0][domain][0]==0 and Players[player][4]!=None:
 			fileOut.extend(
 				(
-				"\n\\draw"+Players[player][2]+"--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
-				"\n\\draw[dotted](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\xMax,\\yMax-\\step*"+str(step)+");"
+				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dotted](\\x"+player+",\\yMax-\\step*"+str(step)+")node[circle,fill,inner sep=0.5ex]{}--(\\xMax,\\yMax-\\step*"+str(step)+");"
 				)
 			)
 			Players[player][3]=Players[player][2]="(\\xMax,\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=None
-		elif int(Environment[0][1])>0:
+		elif int(Environment[0][domain][0])>0:
 			print("A Player cannot Exit a Locked Domain.");step-=1
 		elif Players[player][4]==None:
 			print("A Player cannot Exit outside the Environment.");step-=1
+
 	elif action=="share":
 		sender=items.pop(0)
 		message=items.pop(0)
@@ -163,7 +185,7 @@ for items in MainFlow:
 		if Players[sender][4]==Players[receiver][4] and sender!=receiver and Players[sender][4]!=None:
 			fileOut.append("\n\\draw[")
 			if re.search("^enc(.*)$",message):
-				message=message.strip("enc[").strip("]")
+				message=message.strip("enc").strip("[").strip("]")
 				fileOut.append("dotted,")
 			fileOut.extend(
 				(
@@ -182,50 +204,66 @@ for items in MainFlow:
 			print("A player cannot share a Message to themselves.");step-=1
 		elif Players[sender][4]==None:
 			print("Both Players must be in a Domain to share a Message.");step-=1
-	elif action=="lock" or action=="unlock":
+
+	elif action=="lock":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Players[player][4]==domain:	
-			N=0
-			for e in Environment:
-				if e[0]==domain: break
-				else: N+=1
-			fileOut.append("\n\\draw")
-			if action=="lock": fileOut.append("[dashed]")
+		N=0
+		for Domains in Environment:
+			if domain in Domains: break
+			else: N+=1
+		if Players[player][4]==domain and Environment[N][domain][0]==0:	
 			fileOut.extend(
 				(
-				Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dashed]"+Environment[N][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
 				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
-				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$"
+				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Lock$]{};"
 				)
 			)
-			if action=="lock": 
-				fileOut.append("Lock$]{};")
-				Environment[0][1]=Players[player][0]
-			else: 
-				fileOut.append("Unlock$]{};")
-				Environment[0][1]=0
-			Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+			Environment[N][domain][0]=Players[player][0]
+			Environment[N][domain][1]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-		else:
-			if action=="lock":
-				print("A Player must be in the same Domain to Lock it.")
-			else:
-				print("A Player must be in the same Domain to Unlock it.")
-			step-=1
+		elif Players[player][4]!=domain:
+			print("A Player must be in the same Domain to Lock it.");step-=1
+		elif Environment[N][domain][0]!=0:
+			 print("Domain is already Locked.");step-=1
+
+	elif action=="unlock":
+		player=items.pop(0)
+		domain=items.pop(0)
+		N=0
+		for Domains in Environment:
+			if domain in Domains: break
+			else: N+=1
+		if Players[player][4]==domain and Environment[N][domain][0]!=0:	
+			fileOut.extend(
+				(
+				"\n\\draw"+Environment[N][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
+				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Unlock$]{};"
+				)
+			)
+			Environment[N][domain][0]=0
+			Environment[N][domain][1]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+		elif Players[player][4]!=domain:
+			print("A Player must be in the same Domain to Unlock it.");step-=1
+		elif Environment[N][domain][0]==0:
+			print("Domain is already Unlocked.");step-=1
 	step+=1
 for player in Players:
 	if Players[player][3]==None: Players[player][3] =Players[player][2]
 	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
 fileOut.append("\n\\draw")
-if int(Environment[0][1])==0: fileOut.append("[dashed]")
+if int(Environment[0][domain][0])==0: fileOut.append("[dashed]")
 fileOut.extend(
 	(
-	Environment[0][2]+"--(\\x"+Environment[0][0]+"Lock,\\yMax-\\step*"+str(step)+");",	 
-	"\n\\draw(\\x"+Environment[0][0]+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
-	"\n\\draw[very thick] (\\x"+Environment[0][0]+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+Environment[0][0]+",\\y"+Environment[0][0]+");",
-	"\n\\draw(\\x"+Environment[0][0]+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
+	Environment[0][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",	 
+	"\n\\draw(\\x"+domain+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
+	"\n\\draw[very thick] (\\x"+domain+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+domain+",\\y"+domain+");",
+	"\n\\draw(\\x"+domain+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
 	)
 )
 
@@ -235,128 +273,44 @@ fileOut.extend(
 	"\n\\end{document}"
 	)
 )
-#for e in fileOut:
-#	print(e)
+if len(PostConditions)>0:
+	print("---------------")
+	print("Post Conditions")
+Failed=0
+for items in PostConditions:
+	state=items[0]
+	
+
+	if state=="location":
+		if Players[items[1]][4]==items[2]: 
+			print("True:",items)
+		else: 
+			print("False:",items)
+			Failed+=1
+	
+	if state=="locked":
+		if len(items)==3:
+			player=items[1]
+			domain=items[2]
+		else:
+			player=None
+			domain=items[1]
+		N=0
+		for Domains in Environment:
+			if domain in Domains: 
+				if player==None and Environment[N][domain][0]!=0: print("True:",items);break
+				elif player==None: print("False:",items);Failed+=1;break
+				elif Environment[N][domain][0]==Players[player][0]: print("True:",items);break
+				else: print("False:",items);Failed+=1;break
+			else: N+=1
+
+if len(PostConditions)>0:
+	print("Passed",str(len(PostConditions)-Failed)+'/'+str(len(PostConditions)))
+	print("---------------")
+
 
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:
      file.write(line)
 file.close() #close file
 subprocess.call(["pdflatex","out.tex"])
-
-'''if args.verbose:
-	print("Environment");print("---------------")
-	for building in Environment:
-		print(building,':',Environment[building])
-	print("---------------")
-
-if args.verbose:
-	print("Players");print("---------------")
-	for player in Players:
-		print(player,':',Players[player])
-	print("---------------")
-
-if args.verbose: print("PreConditions");print("---------------")
-for string in PreConditions:
-	state=string.pop(0)
-
-	if state=="locked" or state=="unlocked":
-		facility=string.pop(0)
-		if state=="locked":
-			locked=True
-		else:
-			locked=False
-		if re.search("\[.*\]",facility):
-			building,room=facility.split('[');room=room.strip(']')
-			Environment[building][2][room][1]=locked
-			if args.verbose: print(building,':',Environment[building])
-		else:
-			Environment[facility][1]=locked
-			if args.verbose: print(building,':',Environment[facility])
-		if args.verbose: print("---------------")
-	
-	if state=="location":
-		player=string.pop(0)
-		facility=string.pop(0)
-		Players[player][1]=facility
-		if re.search("\[.*\]",facility):
-			building,room=facility.split('[');room=room.strip(']')
-			if int(Environment[building][2][room][0])==0:
-				Environment[building][2][room][0]=Players[player][0]
-		else:
-			if int(Environment[facility][0])==0:
-				Environment[facility][0]=Players[player][0]
-		if args.verbose: print(player,':',Players[player]);print("---------------")
-		
-
-if args.verbose: print("MainFlow");print("---------------")
-unit=0
-for string in MainFlow:
-	if args.verbose: print(unit,string)
-	action=string.pop(0)
-
-	if action=="enter" or action=="exit" or action=="lock" or action=="unlock":
-		#[player,facility]
-		player=string.pop(0)
-		facility=string.pop(0)
-		empty=False
-		if re.search("\[.*\]",facility):
-			building,room=facility.split('[');room=room.strip(']')
-			
-			if action=="enter" and int(Environment[building][2][room][0])==0:
-				Environment[building][2][room][0]=Players[player][0]	#Set Authority of room
-			
-			elif action=="exit":
-				Players[player][1]=building	
-				for p in Players:
-					if Players[p][1]==facility:
-						empty=False;break
-				if empty:
-					Environment[building][2][room][0]=0
-			
-			elif (action=="lock" or action=="unlock") and int(Environment[building][2][room][0])<=int(Players[player][0]):
-				if action=="lock":
-					Environment[building][2][room][1]=True
-				else:
-					Environment[building][2][room][1]=False
-				 
-		else:
-			
-			if action=="enter" and int(Environment[facility][0])==0:
-				Environment[facility][0]=Players[player][0]
-			
-			elif action=="exit":
-				Players[player][1]=None
-				for p in Players:
-					if Players[p][1]==facility:
-						empty=False;break
-				if empty:
-					Environment[facility][0]=0
-			
-			elif (action=="lock" or action=="unlock") and int(Environment[facility][0])<=int(Players[player][0]):
-				if action=="lock":
-					Environment[facility][1]=True
-				else:
-					Environment[facility][1]=False
-				
-		if action=="enter":
-			Players[player][1]=facility
-		if args.verbose: print(building,':',Environment[building]);print(player,':',Players[player]);print("---------------")
-	
-	else:
-		print("Action not found");print("---------------")
-
-	if unit<10: print("Time",unit,"========")
-	elif unit<100: print("Time",unit,"=======")
-	else: print("Time",unit,"=======")
-	for player in Players:
-		facility=Players[player][1]
-		if facility is not None:
-			if re.search("\[.*\]",facility):
-				building,room=facility.split('[');room=room.strip(']')
-				print(player,'in',room,'in',building)
-			else:
-				print(player,'in',facility)
-	print("===============")
-	unit+=1
-print("Total units:",unit);print("---------------")'''
