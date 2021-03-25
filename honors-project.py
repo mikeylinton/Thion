@@ -228,7 +228,7 @@ for items in MainFlow:
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		elif Players[player][4]!=domain:
 			print("A Player must be in the same Domain to Lock it.");step-=1
-		elif Environment[N][domain][0]!=0:
+		elif Environment[N][domain][0]!=None:
 			 print("Domain is already Locked.");step-=1
 
 	elif action=="unlock":
@@ -238,7 +238,7 @@ for items in MainFlow:
 		for Domains in Environment:
 			if domain in Domains: break
 			else: N+=1
-		if Players[player][4]==domain and Environment[N][domain][0]!=0:	
+		if Players[player][4]==domain and Environment[N][domain][0]!=None:	
 			fileOut.extend(
 				(
 				"\n\\draw"+Environment[N][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
