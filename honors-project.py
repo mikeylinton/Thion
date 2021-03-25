@@ -38,7 +38,7 @@ while True:
 			if section=="Environment":
 				i=len(Environment)
 				Environment.append({})
-				Environment[i][item]=[0,"(\\x"+item+"Lock,\\yMax)"]
+				Environment[i][item]=[None,"(\\x"+item+"Lock,\\yMax)"]
 #				Domain,SubDomains=item.split('[');Domain=re.sub('\]$','',Domain)
 #				head,tail=SubDomains.split(',');tail=re.sub('\]$','',tail)
 				'''building,rooms=item.split('[');rooms=rooms.strip(']')
@@ -134,7 +134,7 @@ for items in PreConditions:
 			if domain in Domains: break
 			else: N+=1
 		if Players[player][4]==domain:
-			Environment[N][domain][0]=Players[player][0]
+			Environment[N][domain][0]=player
 
 if len(PreConditions)>0: step=2
 else: step=1
@@ -145,7 +145,7 @@ for items in MainFlow:
 	if action=="enter":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Environment[0][domain][0]==0 and Players[player][4]!=domain:
+		if Environment[0][domain][0]==None and Players[player][4]!=domain:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
 			else:
@@ -157,14 +157,14 @@ for items in MainFlow:
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=domain
-		elif int(Environment[0][domain][0])>0:
+		elif int(Players[Environment[0][domain][0]][0])>0:
 			print("A Player cannot Enter a Locked Domain.");step-=1
 		elif Players[player][4]==domain:
 			print("A Player cannot Enter a Domain they are already in.");step-=1
 	elif action=="exit":
 		player=items.pop(0)
 		domain=items.pop(0)
-		if Environment[0][domain][0]==0 and Players[player][4]!=None:
+		if Environment[0][domain][0]==None and Players[player][4]!=None:
 			fileOut.extend(
 				(
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
@@ -173,7 +173,7 @@ for items in MainFlow:
 			)
 			Players[player][3]=Players[player][2]="(\\xMax,\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=None
-		elif int(Environment[0][domain][0])>0:
+		elif int(Players[Environment[0][domain][0]][0])>0:
 			print("A Player cannot Exit a Locked Domain.");step-=1
 		elif Players[player][4]==None:
 			print("A Player cannot Exit outside the Environment.");step-=1
@@ -187,6 +187,8 @@ for items in MainFlow:
 			if re.search("^enc(.*)$",message):
 				message=message.strip("enc").strip("[").strip("]")
 				fileOut.append("dotted,")
+			elif int(Players[receiver][0])<int(Players[sender][1][message]):
+				fileOut.append("red,")
 			fileOut.extend(
 				(
 				"-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
@@ -212,7 +214,7 @@ for items in MainFlow:
 		for Domains in Environment:
 			if domain in Domains: break
 			else: N+=1
-		if Players[player][4]==domain and Environment[N][domain][0]==0:	
+		if Players[player][4]==domain and Environment[N][domain][0]==None:	
 			fileOut.extend(
 				(
 				"\n\\draw[dashed]"+Environment[N][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
@@ -221,7 +223,7 @@ for items in MainFlow:
 				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Lock$]{};"
 				)
 			)
-			Environment[N][domain][0]=Players[player][0]
+			Environment[N][domain][0]=player
 			Environment[N][domain][1]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		elif Players[player][4]!=domain:
@@ -245,19 +247,19 @@ for items in MainFlow:
 				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Unlock$]{};"
 				)
 			)
-			Environment[N][domain][0]=0
+			Environment[N][domain][0]=None
 			Environment[N][domain][1]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		elif Players[player][4]!=domain:
 			print("A Player must be in the same Domain to Unlock it.");step-=1
-		elif Environment[N][domain][0]==0:
+		elif Environment[N][domain][0]==None:
 			print("Domain is already Unlocked.");step-=1
 	step+=1
 for player in Players:
 	if Players[player][3]==None: Players[player][3] =Players[player][2]
 	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
 fileOut.append("\n\\draw")
-if int(Environment[0][domain][0])==0: fileOut.append("[dashed]")
+if Environment[0][domain][0]==None: fileOut.append("[dashed]")
 fileOut.extend(
 	(
 	Environment[0][domain][1]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",	 
@@ -298,14 +300,14 @@ for items in PostConditions:
 		N=0
 		for Domains in Environment:
 			if domain in Domains: 
-				if player==None and Environment[N][domain][0]!=0: print("True:",items);break
+				if player==None and Environment[N][domain][0]!=None: print("True:",items);break
 				elif player==None: print("False:",items);Failed+=1;break
-				elif Environment[N][domain][0]==Players[player][0]: print("True:",items);break
+				elif Environment[N][domain][0]==player: print("True:",items);break
 				else: print("False:",items);Failed+=1;break
 			else: N+=1
 
 if len(PostConditions)>0:
-	print("Passed",str(len(PostConditions)-Failed)+'/'+str(len(PostConditions)))
+	print("Passed",str(len(PostConditions)-Failed)+'/'+str(len(PostConditions)),str(((len(PostConditions)-Failed)/len(PostConditions))*100)+'%')
 	print("---------------")
 
 
