@@ -1,8 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1616601360 "/home/aspi/Scripts/python/3.9/honors-project/out.tex" "/home/aspi/Scripts/python/3.9/honors-project/out.pdf" "out" 1616601362
+["pdflatex"] 1616678884 "/home/aspi/Scripts/python/3.9/honors-project/out.tex" "/home/aspi/Scripts/python/3.9/honors-project/out.pdf" "out" 1616678885
   "/etc/texmf/web2c/texmf.cnf" 1615639350 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/aspi/Scripts/python/3.9/honors-project/out.aux" 1616601362 32 044b7f8fc9779af7531264e0c5c84b6d ""
-  "/home/aspi/Scripts/python/3.9/honors-project/out.tex" 1616601356 5720 cf32576ae7be7d09bda9931d5bf364e0 ""
+  "/home/aspi/Scripts/python/3.9/honors-project/out.aux" 1616678885 32 044b7f8fc9779af7531264e0c5c84b6d ""
+  "/home/aspi/Scripts/python/3.9/honors-project/out.tex" 1616678881 5458 67fe032ceea1999788a18b3a8e997a3a ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -90,11 +90,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1613593815 38841 799d1dd9682a55ce442e10c99777ecc1 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1615972044 128079 8307b05160bf39a2fd341a004bf1a4b3 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1616415742 1283505 3421c655dd2cb779bf9b0f418151b833 ""
-  "out.aux" 1616601362 32 044b7f8fc9779af7531264e0c5c84b6d "pdflatex"
-  "out.tex" 1616601356 5720 cf32576ae7be7d09bda9931d5bf364e0 ""
+  "out.aux" 1616678885 32 044b7f8fc9779af7531264e0c5c84b6d "pdflatex"
+  "out.tex" 1616678881 5458 67fe032ceea1999788a18b3a8e997a3a ""
   (generated)
+  "out.pdf"
   "out.aux"
   "/home/aspi/Scripts/python/3.9/honors-project/out.pdf"
-  "/home/aspi/Scripts/python/3.9/honors-project/out.log"
-  "out.pdf"
   "out.log"
+  "/home/aspi/Scripts/python/3.9/honors-project/out.log"

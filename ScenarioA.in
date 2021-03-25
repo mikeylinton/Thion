@@ -1,11 +1,9 @@
 [Environment]
 BuildingA;
 [Players]
-Alice(3)[aMsg(1)];
+Alice(3)[aMsg(2)];
 Bob(1);
-Carol(0);
-Devan(4);
-Eve(3)[eMsg(2)];
+Eve(3)[eMsg(3)];
 [MainFlow]
 enter(Bob,BuildingA);
 enter(Alice,BuildingA);
