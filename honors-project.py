@@ -189,6 +189,12 @@ for items in MainFlow:
 				fileOut.append("dotted,")
 			elif int(Players[receiver][0])<int(Players[sender][1][message]):
 				fileOut.append("red,")
+			else:
+				for player in Players:
+					if Players[player][4]==domain and player!=sender and player!=receiver:
+						if int(Players[player][0])<int(Players[sender][1][message]):
+							fileOut.append("red,");break
+
 			fileOut.extend(
 				(
 				"-{Latex[angle=45:2ex]}](\\x"+sender+",\\yMax-\step*"+str(step)+")--(\\x"+receiver+",\\yMax-\\step*"+str(step)+");",
