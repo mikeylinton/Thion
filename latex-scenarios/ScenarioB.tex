@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{arrows.meta}
+\usepackage{nopageno}
+%---
+\newcommand\unit{0.25}
+\newcommand\step{\unit*6}
+%---
+\newcommand\yMax{\step*15}
+\newcommand\xMax{\yMax-\unit*2}
+%---
+\newcommand\xAlice{\xDomain-\step*3}
+\newcommand\xBob{\xDomain-\step*2}
+\newcommand\xEve{\xDomain-\step}
+\newcommand\flowSpacing{4*\step}
+%---
+\newcommand\yDomain{\yMax-\unit}
+\newcommand\xDomain{\xMax-\step/2}
+%---
+\newcommand\ySubDomain{\yDomain-\unit*2}
+\newcommand\xSubDomainA{\xDomain-\flowSpacing}
+\newcommand\xSubDomainB{\xSubDomainA-\flowSpacing-\step/2}
+%---
+%\newcommand\yMeetingRoom{\yMax-}
+\begin{document}
+    \hspace*{-30ex} \vspace*{-30ex}
+    \tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
+    \begin{tikzpicture}[>=latex]
+%        \draw[step=1.0,black,thin,xshift=0.5cm,yshift=0.5cm] (0,0) grid (\xMax,\yMax);
+%---
+        \draw[very thick] (\xSubDomainB-\flowSpacing-\unit*2,\unit) rectangle (\xDomain,\yDomain);
+        \draw[very thick](\xSubDomainA-\flowSpacing,\step/2)rectangle (\xSubDomainA,\ySubDomain);
+        \draw[very thick](\xSubDomainB-\flowSpacing,\step/2)rectangle (\xSubDomainB,\ySubDomain);
+%---    Lock Timeline
+        \draw[dashed](\xDomain-\unit*2,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{}--(\xDomain-\unit*2,0)node[rectangle,fill,inner sep=0.5ex]{};
+        \draw[dashed](\xSubDomainA-\unit*2,\yDomain-\unit)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{}--(\xSubDomainA-\unit*2,\unit*2)node[rectangle,fill,inner sep=0.5ex]{};
+        \draw[dashed](\xSubDomainB-\unit*2,\yDomain-\unit)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{}--(\xSubDomainB-\unit*2,\unit*2)node[rectangle,fill,inner sep=0.5ex]{};
+%---    Players    
+        \draw(\xAlice,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Alice(3)$]{};
+        \draw(\xBob,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Bob(1)$]{};
+        \draw(\xEve,\yMax)node[circle,fill,inner sep=0.5ex,label=above:$Eve(3)$]{};
+%---    Players Enter Building A       
+        \draw[dotted](\xAlice,\yMax)--(\xAlice,\yMax-\step)node[circle,fill,inner sep=0.5ex]{};
+        \draw[dotted](\xBob,\yMax)--(\xBob,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{};
+        \draw[dotted](\xEve,\yMax)--(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{};
+%---    Alice to Meeting Room 
+        \draw[dotted](\xAlice,\yMax-\step)--(\xAlice,\yMax-\step*4);
+        \draw[dotted](\xAlice,\yMax-\step*4)--(\xSubDomainA-\step*3,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{};
+%---    Eve to Meeting Room
+        \draw[dotted](\xEve,\yMax-\step*3)--(\xEve,\yMax-\step*5);
+        \draw[dotted](\xEve,\yMax-\step*5)--(\xSubDomainA-\step,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{};
+%---    Bob exits Building A
+        \draw[dotted](\xBob,\yMax-\step*2)--(\xBob,\yMax-\step*6);
+        \draw[dotted](\xBob,\yMax-\step*6)--(\xMax,\yMax-\step*6);
+%---    Alice - Message A > Eve
+        \draw(\xSubDomainA-\step*3,\yMax-\step*4)--(\xSubDomainA-\step*3,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{};
+        \draw(\xSubDomainA-\step,\yMax-\step*5)--(\xSubDomainA-\step,\yMax-\step*7);
+        \draw[dotted,-{Latex[angle=45:2ex]}](\xSubDomainA-\step*3,\yMax-\step*7)--(\xSubDomainA-\step,\yMax-\step*7);
+        \draw(\xSubDomainA-\step*2.5,\yMax-\step*7)node[label=above:$Msg(2)$]{};
+%---    Eve - Message B > Alice
+        \draw(\xSubDomainA-\step*3,\yMax-\step*7)--(\xSubDomainA-\step*3,\yMax-\step*8){};
+        \draw(\xSubDomainA-\step,\yMax-\step*7)--(\xSubDomainA-\step,\yMax-\step*8)node[circle,fill,inner sep=0.5ex]{};
+        \draw[dotted,{Latex[angle=45:2ex]}-](\xSubDomainA-\step*3,\yMax-\step*8)--(\xSubDomainA-\step,\yMax-\step*8);
+        \draw(\xSubDomainA-\step*1.5,\yMax-\step*8)node[label=above:$Msg(2)$]{};
+%---    Eve exit Meeting Room
+        \draw[dotted](\xSubDomainA-\step,\yMax-\step*8)--(\xSubDomainA-\step,\yMax-\step*9);
+        \draw[dotted](\xSubDomainA-\step,\yMax-\step*9)--(\xEve,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{};
+
+%---    Bob REenter Building A
+        \draw(\xMax,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{};
+        \draw[dotted](\xMax,\yMax-\step*10)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*10)node[circle,fill,inner sep=0.5ex]{};
+%---    Alice exit Meeting Room
+        \draw[dotted](\xSubDomainA-\step*3,\yMax-\step*8)--(\xSubDomainA-\step*3,\yMax-\step*11);
+        \draw[dotted](\xSubDomainA-\step*3,\yMax-\step*11)--(\xAlice,\yMax-\step*11)node[circle,fill,inner sep=0.5ex]{};
+%---    Eve exits Building A
+        \draw[dotted](\xEve,\yMax-\step*9)--(\xEve,\yMax-\step*12);
+        \draw[dotted](\xEve,\yMax-\step*12)--(\xMax,\yMax-\step*12);
+        \draw(\xMax,\yMax-\step*12)node[cross]{};
+%---    Alice exits Building A
+        \draw[dotted](\xAlice,\yMax-\step*11)--(\xAlice,\yMax-\step*13);
+        \draw[dotted](\xAlice,\yMax-\step*13)--(\xMax,\yMax-\step*13);
+        \draw(\xMax,\yMax-\step*13)node[cross]{};
+%---    Bob exits Building A
+        \draw[dotted](\xBob,\yMax-\step*10)--(\xBob,\yMax-\step*14);
+        \draw[dotted](\xBob,\yMax-\step*14)--(\xMax,\yMax-\step*14);
+        \draw(\xMax,\yMax-\step*14)node[cross]{};
+%---
+    \end{tikzpicture} 
+\end{document} 
