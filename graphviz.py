@@ -1,4 +1,6 @@
-import re as ree;from graphviz import Digraph as Dot;import argparse as ap
+import re as ree;
+from graphviz import Digraph as Dot;
+import argparse as ap
 #authority={"name":[],"digit":[]}
 G=Dot()
 
@@ -28,6 +30,7 @@ while True:
 				rooms=rooms.strip(']')
 				G.body.append('"'+building+'" [shape=none] [label="'+building.replace('_', ' ')+' lock"]')
 				G.edge(building, '0('+building+')')
+				G.body.append('[style=invis]')
 				vars()[cluster_building]=Dot(cluster_building)
 				vars()[cluster_building].body.append('label="'+building.replace('_', ' ')+'"')
 				rooms=ree.split(',',rooms)
@@ -35,6 +38,7 @@ while True:
 					room=room.replace(' ', '_')
 					vars()[cluster_building].body.append('"'+building+'_'+room+'" [shape=none] [label="'+room.replace('_', ' ')+' lock"]')
 					vars()[cluster_building].edge(building+'_'+room, '0('+building+'_'+room+')')
+					vars()[cluster_building].body.append('[style=invis]')
 					input_buildings[len_input_buildings].append(room)
 					cluster_building_room=cluster_building+'_'+room
 					vars()[cluster_building_room] = Dot(cluster_building_room)

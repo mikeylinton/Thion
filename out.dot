@@ -1,23 +1,35 @@
 digraph {
-ranksep=".1"; nodesep=".1"; splines="line"; weight=1000; edge [dir=none fontsize=10 weight=1000]; node [shape=point fontsize=10 weight=1000]
-"Building_A" [shape=none] [label="Building A lock"]
-	Building_A -> "0(Building_A)"
+fontsize=12; ranksep=".1"; nodesep=".1"; splines="line"; weight=1000; edge [dir=none fontsize=10 weight=1000]; node [shape=point fontsize=10 weight=1000]
+
+#a -> c [dir=forward]
+
+"Building_A" [shape=none] [label="Lock"]
+	Building_A -> "0(Building_A)" [style=invis]
 "Alice" [shape=none] [label="Alice(3)"]
-	Alice -> "0(Alice)"
+	Alice -> "0(Alice)" [style=invis]
 { rank=same; edge[style=invis] "Building_A" -> "Alice" }
 "Eve" [shape=none] [label="Eve(2)"]
-	Eve -> "0(Eve)"
+	Eve -> "0(Eve)" [style=invis]
 { rank=same; edge[style=invis] "Building_A" -> "Eve" }
 	"0(Building_A)" -> "1(Building_A)"
 "0(Alice)" -> "1(Alice)" [style=dotted]
-"0(Eve)" -> "2(Eve)" [style=dotted]
+"0(Eve)" -> "1(Eve)" [style=dotted]
+
 	subgraph cluster_Building_A {
 	label="Building A"
-	"Building_A_Meeting_room" [shape=none] [label="Meeting room lock"]
-		Building_A_Meeting_room -> "0(Building_A_Meeting_room)"
+	"Building_A_Meeting_room" [shape=none] [label="Lock"]
+		Building_A_Meeting_room -> "0(Building_A_Meeting_room)" [style=invis]
+		"1(Building_A)"
 		"1(Alice)"
+		"1(Eve)" [style=invis]
 		"1(Building_A)" -> "2(Building_A)"
-		"1(Eve)" -> "2(Eve)"
+		"1(Alice)" -> "2(Alice)" -> "3(Alice)"		
+		"1(Eve)" -> "2(Eve)" [style=dotted]
+		"3(Eve)"
+		"2(Eve)" -> "3(Eve)"
+		{ rank=same; edge[style=invis] "Building_A" -> "Eve" }
+		#"3(Alice)" -> "3(Eve)" [dir=forward]
+		"3(Eve)" -> "0(Building_A_Meeting_room)" [dir=forward]
 		"0(Building_A_Meeting_room)" -> "1(Building_A_Meeting_room)"
 		subgraph cluster_Building_A_Meeting_room {
 		label="Meeting room"
