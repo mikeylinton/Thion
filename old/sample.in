@@ -1,0 +1,15 @@
+[Environment]
+Building A[];
+#Building B[Meeting room];
+[Players]
+Alice(3);Eve(2);
+#Bob(1);Hector(0);
+[Pre-conditions]
+#locked(Meeting room);
+[Main-flow]
+enter(Alice,Building A);enter(Eve,Building A);
+#enter(Alice,Meeting room);enter(Eve,Meeting room);
+exit(Alice);exit(Eve);
+#enter(Bob,Building B);enter(Hector,Building B);enter(Bob,Meeting room);enter(Hector,Meeting room);exit(Bob);exit(Hector);
+[Post-conditions]
+#locked(Meeting room);
