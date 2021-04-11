@@ -8,7 +8,7 @@ PLACEHOLDER=None;section=None
 Players={}
 Environment=[]
 PreConditions=[];MainFlow=[];PostConditions=[]
-inputfile=open('inputFile','r')
+inputfile=open('ScenarioA.in','r')
 fileReader=[]
 fileOut=[]
 ThreatReport=[]
@@ -181,7 +181,7 @@ for items in MainFlow:
 		for Domain in Environment:
 			if domain==Domain[0]: domainExists=True;break
 			else: N+=1
-		if playerExists and domainExists and Environment[N][1] and Players[player][4]!=None:
+		if playerExists and domainExists and not Environment[N][1] and Players[player][4]!=None:
 			fileOut.extend(
 				(
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
@@ -209,6 +209,10 @@ for items in MainFlow:
 		recipientExists=False
 		messageExists=False
 		messageEncrypted=False
+		N=0
+		for Domain in Environment:
+			if domain==Domain[0]: domainExists=True;break
+			else: N+=1
 		if re.search("^enc\[.*\]$",message):
 				message=re.sub('\]$','',re.sub("^enc\[",'',message))
 				messageEncrypted=True
@@ -222,16 +226,24 @@ for items in MainFlow:
 		if senderExists and recipientExists and messageExists and Players[sender][4]==Players[recipient][4] and sender!=recipient and Players[sender][4]!=None:
 			fileOut.append("\n\\draw[")
 			if messageEncrypted:
-				fileOut.append("dotted,")
+				fileOut.append("dashdotted,")
 			elif int(Players[recipient][0])<int(Players[sender][1][message]):
 				fileOut.append("red,")
 				ThreatReport.append("'"+recipient+"' does not have the authority to read '"+message+"' from '"+sender+"'; step "+str(step)+", line "+str(lineCount)+".")
+			elif int(Players[sender][0])<int(Players[sender][1][message]):
+				fileOut.append("red,")
+				ThreatReport.append("'"+sender+"' does not have the authority to send '"+message+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
 			else:
 				for player in Players:
 					if Players[player][4]==Players[sender][4] and player!=sender and player!=recipient:
 						if int(Players[player][0])<int(Players[sender][1][message]):
 							fileOut.append("red,")
 							ThreatReport.append("'"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
+							break
+					if not Environment[N][1] and Players[player][4]==None and player!=sender and player!=recipient:
+						if int(Players[player][0])<int(Players[sender][1][message]):
+							fileOut.append("orange,")
+							ThreatReport.append("Warning: '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
 							break
 			fileOut.extend(
 				(
