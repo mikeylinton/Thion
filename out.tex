@@ -4,13 +4,12 @@
 \newcommand\yMax{\step*14}
 \newcommand\xMax{\step*14}
 \newcommand\labelSpacing{\step*0.4}
-\newcommand\yBuildingA{\yMax-\unit}
-\newcommand\xBuildingA{\xMax-\step/2}
-\newcommand\xBuildingALock{\xBuildingA-\step/2}
-\newcommand\flowSpacing{\step*4}
-\newcommand\xAlice{\xBuildingALock-\step*3}
-\newcommand\xBob{\xBuildingALock-\step*2}
-\newcommand\xEve{\xBuildingALock-\step*1}
+\newcommand\yMeetingRoom{\yMax-\unit}
+\newcommand\xMeetingRoom{\xMax-\step/2}
+\newcommand\xMeetingRoomLock{\xMeetingRoom-\step/2}
+\newcommand\flowSpacing{\step*3}
+\newcommand\xAlice{\xMeetingRoomLock-\step*2}
+\newcommand\xEve{\xMeetingRoomLock-\step*1}
 \begin{document}
 \pdfpageheight 450mm
 \pdfpagewidth 210mm
@@ -18,55 +17,42 @@
 \tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
 \begin{tikzpicture}[>=latex]
 \draw(\xAlice,\yMax)node[label=above:$Alice(3)$]{};
-\draw(\xBob,\yMax)node[label=above:$Bob(1)$]{};
 \draw(\xEve,\yMax)node[label=above:$Eve(3)$]{};
-\draw[red,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*2)--(\xBob,\yMax-\step*2);
-\draw(\xEve,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*2);
-\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*2);
-\draw(\xEve-\labelSpacing,\yMax-\step*2)node[label=above:$Msg(3)$]{};
-\draw[dashdotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*3)--(\xBob,\yMax-\step*3);
+\draw[dotted](\xAlice,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*1){};
+\draw[dotted](\xEve,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*2){};
+\draw[dashdotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*3)--(\xEve,\yMax-\step*3);
+\draw(\xAlice,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*3);
 \draw(\xEve,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*3);
-\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*3);
-\draw(\xEve-\labelSpacing,\yMax-\step*3)node[label=above:$Msg(3)$]{};
-\draw[red,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*4)--(\xEve,\yMax-\step*4);
-\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*4);
-\draw(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*4);
-\draw(\xBob-\labelSpacing,\yMax-\step*4)node[label=above:$Msg(3)$]{};
-\draw[dashdotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*5)--(\xEve,\yMax-\step*5);
-\draw(\xBob,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*5);
-\draw(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*5);
-\draw(\xBob-\labelSpacing,\yMax-\step*5)node[label=above:$Msg(3)$]{};
-\draw(\xBuildingALock,\yMax)--(\xBuildingALock,\yMax-\step*6);
-\draw(\xBob,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*6){};
-\draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*6)--(\xBuildingALock,\yMax-\step*6);
-\draw(\xBob-\labelSpacing,\yMax-\step*6)node[label=above:$Unlock$]{};
-\draw(\xBob,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*7);
-\draw[dotted](\xBob,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{}--(\xMax,\yMax-\step*7);
-\draw[dotted](\xAlice,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*8){};
-\draw[orange,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*9)--(\xEve,\yMax-\step*9);
+\draw(\xAlice-\labelSpacing,\yMax-\step*3)node[label=above:$Msg(2)$]{};
+\draw[dashdotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*4)--(\xAlice,\yMax-\step*4);
+\draw(\xEve,\yMax-\step*2)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*4);
+\draw(\xAlice,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*4);
+\draw(\xEve-\labelSpacing,\yMax-\step*4)node[label=above:$Msg(2)$]{};
+\draw[dashed](\xMeetingRoomLock,\yMax)--(\xMeetingRoomLock,\yMax-\step*5);
+\draw(\xAlice,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*5){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*5)--(\xMeetingRoomLock,\yMax-\step*5);
+\draw(\xAlice-\labelSpacing,\yMax-\step*5)node[label=above:$Lock$]{};
+\draw[-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*6)--(\xEve,\yMax-\step*6);
+\draw(\xAlice,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*6);
+\draw(\xEve,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*6);
+\draw(\xAlice-\labelSpacing,\yMax-\step*6)node[label=above:$Msg(2)$]{};
+\draw[-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*7)--(\xAlice,\yMax-\step*7);
+\draw(\xEve,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*7);
+\draw(\xAlice,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*7);
+\draw(\xEve-\labelSpacing,\yMax-\step*7)node[label=above:$Msg(2)$]{};
+\draw(\xMeetingRoomLock,\yMax-\step*5)--(\xMeetingRoomLock,\yMax-\step*8);
+\draw(\xAlice,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*8){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*8)--(\xMeetingRoomLock,\yMax-\step*8);
+\draw(\xAlice-\labelSpacing,\yMax-\step*8)node[label=above:$Unlock$]{};
 \draw(\xAlice,\yMax-\step*8)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*9);
-\draw(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*9);
-\draw(\xAlice-\labelSpacing,\yMax-\step*9)node[label=above:$Msg(2)$]{};
-\draw[dashed](\xBuildingALock,\yMax-\step*6)--(\xBuildingALock,\yMax-\step*10);
-\draw(\xAlice,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*10){};
-\draw[dotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*10)--(\xBuildingALock,\yMax-\step*10);
-\draw(\xAlice-\labelSpacing,\yMax-\step*10)node[label=above:$Lock$]{};
-\draw[-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*11)--(\xAlice,\yMax-\step*11);
-\draw(\xEve,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*11);
-\draw(\xAlice,\yMax-\step*10)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*11);
-\draw(\xEve-\labelSpacing,\yMax-\step*11)node[label=above:$Msg(2)$]{};
-\draw(\xBuildingALock,\yMax-\step*10)--(\xBuildingALock,\yMax-\step*12);
-\draw(\xEve,\yMax-\step*11)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*12){};
-\draw[dotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*12)--(\xBuildingALock,\yMax-\step*12);
-\draw(\xEve-\labelSpacing,\yMax-\step*12)node[label=above:$Unlock$]{};
-\draw(\xMax,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{};
-\draw[dotted](\xMax,\yMax-\step*13)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*13){};
-\draw(\xAlice,\yMax-\step*11)node[cross]{};
-\draw(\xBob,\yMax-\step*13)node[cross]{};
-\draw(\xEve,\yMax-\step*12)node[cross]{};
-\draw[dashed](\xBuildingALock,\yMax-\step*12)--(\xBuildingALock,\yMax-\step*14);
-\draw(\xBuildingALock,\yMax-\step*14)node[rectangle,fill,inner sep=0.5ex]{};
-\draw[very thick] (\xBuildingA-\flowSpacing-\unit*2,\yMax-\step*14+\unit) rectangle (\xBuildingA,\yBuildingA);
-\draw(\xBuildingALock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
+\draw[dotted](\xAlice,\yMax-\step*9)node[circle,fill,inner sep=0.5ex]{}--(\xMax,\yMax-\step*9);
+\draw(\xEve,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*10);
+\draw[dotted](\xEve,\yMax-\step*10)node[circle,fill,inner sep=0.5ex]{}--(\xMax,\yMax-\step*10);
+\draw(\xMax,\yMax-\step*9)node[cross]{};
+\draw(\xMax,\yMax-\step*10)node[cross]{};
+\draw[dashed](\xMeetingRoomLock,\yMax-\step*8)--(\xMeetingRoomLock,\yMax-\step*11);
+\draw(\xMeetingRoomLock,\yMax-\step*11)node[rectangle,fill,inner sep=0.5ex]{};
+\draw[very thick] (\xMeetingRoom-\flowSpacing-\unit*2,\yMax-\step*11+\unit) rectangle (\xMeetingRoom,\yMeetingRoom);
+\draw(\xMeetingRoomLock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
 \end{tikzpicture}
 \end{document}

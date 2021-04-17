@@ -90,7 +90,7 @@ for Domain in Environment:
 N=len(Players)
 fileOut.append("\n\\newcommand\\flowSpacing{\\step*"+str((N+1))+"}")
 for player in Players:
-	fileOut.append("\n\\newcommand\\x"+player+"{\\xBuildingALock-\\step*"+str(N)+"}");N-=1
+	fileOut.append("\n\\newcommand\\x"+player+"{\\x"+Environment[0][0]+"Lock-\\step*"+str(N)+"}");N-=1
 
 fileOut.extend(
 	(	

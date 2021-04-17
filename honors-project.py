@@ -8,7 +8,7 @@ PLACEHOLDER=None;section=None
 Players={}
 Environment=[]
 PreConditions=[];MainFlow=[];PostConditions=[]
-inputfile=open('ScenarioA.in','r')
+inputfile=open('inputFile','r')
 fileReader=[]
 fileOut=[]
 ThreatReport=[]
@@ -30,7 +30,7 @@ while True:
 		if item in sections:
 			section=item
 		else:
-			print("\nUnknown section type:",line,'\n',"Section types: [Environment] , [Players] , [Pre-conditions] , [Main-flow] , [Post-conditions]",'\n')
+			print("\nUnknown section type:",line,'\n',"Section types: [Environment] , [Players] , [PreConditions] , [Main-flow] , [PostConditions]",'\n')
 
 	elif re.search("^.*;$",line) and not re.search("^#",line):
 		items=re.split(';+',line)
@@ -43,9 +43,9 @@ while True:
 				vars()[section].append([])
 				action,elements=item.split('(');elements=elements.strip(')')
 				elements=re.split(',',elements)
-				vars()[section][i].append(action)
+				vars()[section][i].append(action.strip())
 				for element in elements:
-					vars()[section][i].append(element)
+					vars()[section][i].append(element.strip())
 
 			elif section=="Players":
 				Messages={}
@@ -90,7 +90,7 @@ for Domain in Environment:
 N=len(Players)
 fileOut.append("\n\\newcommand\\flowSpacing{\\step*"+str((N+1))+"}")
 for player in Players:
-	fileOut.append("\n\\newcommand\\x"+player+"{\\xBuildingALock-\\step*"+str(N)+"}");N-=1
+	fileOut.append("\n\\newcommand\\x"+player+"{\\x"+Environment[0][0]+"Lock-\\step*"+str(N)+"}");N-=1
 
 fileOut.extend(
 	(	
@@ -129,7 +129,9 @@ for items in PreConditions:
 
 if len(PreConditions)>0: step=2
 else: step=1
-print("-----------------------------")
+print("------------------------------")
+print("----------- Report -----------")
+print("------------------------------")
 lineCount=1
 for item in fileReader:
 	lineCount+=1
