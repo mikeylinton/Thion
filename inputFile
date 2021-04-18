@@ -2,16 +2,8 @@
 MeetingRoom;
 [Players]
 Alice(3)[Msg(2)];
-Eve(3);
+[PreConditions]
+location(Alice, MeetingRoom);
+location(Eve, MeetingRoom);
 [MainFlow]
-unlock(Alice, MeetingRoom);
-enter(Alice, MeetingRoom);
-enter(Eve, MeetingRoom);
-share(Alice, enc[Msg], Eve);
-share(Eve, enc[Msg], Alice);
-lock(Alice, MeetingRoom);
-share(Alice, Msg, Eve);
-share(Eve, Msg, Alice);
-unlock(Alice, MeetingRoom);
-exit(Alice, MeetingRoom);
-exit(Eve, MeetingRoom);
+share(Alice, enc[Msg], Bob);

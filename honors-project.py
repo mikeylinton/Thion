@@ -79,12 +79,12 @@ fileOut.extend(
 	)
 )
 
-for Domain in Environment:
+for Location in Environment:
 	fileOut.extend(
 		(
-		"\n\\newcommand\\y"+Domain[0]+"{\\yMax-\\unit}",
-		"\n\\newcommand\\x"+Domain[0]+"{\\xMax-\\step/2}",
-		"\n\\newcommand\\x"+Domain[0]+"Lock{\\x"+Domain[0]+"-\\step/2}"
+		"\n\\newcommand\\y"+Location[0]+"{\\yMax-\\unit}",
+		"\n\\newcommand\\x"+Location[0]+"{\\xMax-\\step/2}",
+		"\n\\newcommand\\x"+Location[0]+"Lock{\\x"+Location[0]+"-\\step/2}"
 		)
 	)
 N=len(Players)
@@ -106,33 +106,29 @@ fileOut.extend(
 
 for player in Players:
 	fileOut.append("\n\\draw(\\x"+player+",\\yMax)node[label=above:$"+player+"("+Players[player][0]+")$]{};")
-
+step=1
 for items in PreConditions:
 	state=items.pop(0)
 
 	if state=="location":
 		player=items.pop(0)
-		domain=items.pop(0)
+		location=items.pop(0)
 
 		if Players[player][4]==None:
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*1)"
-			Players[player][4]=domain
+			Players[player][4]=location
+			step=2
 	
 	if state=="locked":
-		domain=items.pop(0)
-		for Domain in Environment:
-			if domain==Domain[0]: Domain[1]=True;break
+		location=items.pop(0)
+		for Location in Environment:
+			if location==Location[0]: Location[1]=True;break
 			
 		#for player in Players:
-		#	if Players[player][4]==domain:
+		#	if Players[player][4]==location:
 		#		Environment[N][1]=True;break
-
-if len(PreConditions)>0: step=2
-else: step=1
-print("------------------------------")
-print("----------- Report -----------")
-print("------------------------------")
 lineCount=1
+errorCount=0
 for item in fileReader:
 	lineCount+=1
 	if item=="[MainFlow]": break
@@ -142,16 +138,16 @@ for items in MainFlow:
 
 	if action=="enter":
 		player=items.pop(0)
-		domain=items.pop(0)
+		location=items.pop(0)
 		playerExists=False
-		domainExists=False
+		locationExists=False
 		for Player in Players: 
 			if Player==player: playerExists=True;break
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if not Environment[N][1] and Players[player][4]!=domain:
+		if not Environment[N][1] and Players[player][4]!=location:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
 			else:
@@ -162,28 +158,28 @@ for items in MainFlow:
 					)
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-			Players[player][4]=domain
+			Players[player][4]=location
 		elif not playerExists:
-			print("KeyError: Player '"+player+"' not defined; line "+str(lineCount)+".");step-=1
-		elif not domainExists:
-			print("KeyError: Domain '"+domain+"' not defined; line "+str(lineCount)+".");step-=1
-		elif Environment[N][1]: #and int(Players[Environment[0][domain][0]][0])>0:
-			FeasibilityReport.append("'"+player+"' cannot Enter '"+domain+"' while Locked; line "+str(lineCount)+".");step-=1
-		elif Players[player][4]==domain:
-			FeasibilityReport.append("'"+player+"' is already in '"+domain+"'; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
+		elif Environment[N][1]: #and int(Players[Environment[0][location][0]][0])>0:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Enter '"+location+"' while Locked.");step-=1
+		elif Players[player][4]==location:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is already in '"+location+"'.");step-=1
 	
 	elif action=="exit":
 		player=items.pop(0)
-		domain=items.pop(0)
+		location=items.pop(0)
 		playerExists=False
-		domainExists=False
+		locationExists=False
 		for Player in Players: 
 			if Player==player: playerExists=True;break
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if playerExists and domainExists and not Environment[N][1] and Players[player][4]!=None:
+		if playerExists and locationExists and not Environment[N][1] and Players[player][4]!=None:
 			fileOut.extend(
 				(
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+");",
@@ -195,13 +191,13 @@ for items in MainFlow:
 			Players[player][4]=None
 			#
 		elif not playerExists:
-			print("KeyError: Player '"+player+"' not defined; line "+str(lineCount)+".");step-=1
-		elif not domainExists:
-			print("KeyError: Domain '"+domain+"' not defined; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
 		elif Environment[N][1]:
-			FeasibilityReport.append("'"+player+"' cannot Exit '"+domain+"' while Locked; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Exit '"+location+"' while Locked.");step-=1
 		elif Players[player][4]==None:
-			FeasibilityReport.append("'"+player+"' cannot Exit outside the Environment; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Exit outside the Environment.");step-=1
 
 	elif action=="share":
 		sender=items.pop(0)
@@ -212,8 +208,8 @@ for items in MainFlow:
 		messageExists=False
 		messageEncrypted=False
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
 		if re.search("^enc\[.*\]$",message):
 				message=re.sub('\]$','',re.sub("^enc\[",'',message))
@@ -231,21 +227,21 @@ for items in MainFlow:
 				fileOut.append("dashdotted,")
 			elif int(Players[recipient][0])<int(Players[sender][1][message]):
 				fileOut.append("red,")
-				ThreatReport.append("'"+recipient+"' does not have the authority to read '"+message+"' from '"+sender+"'; step "+str(step)+", line "+str(lineCount)+".")
+				ThreatReport.append("("+str(lineCount)+") '"+recipient+"' does not have the authority to read '"+message+"' from '"+sender+"' => Encrypt '"+message+"'.")
 			elif int(Players[sender][0])<int(Players[sender][1][message]):
 				fileOut.append("red,")
-				ThreatReport.append("'"+sender+"' does not have the authority to send '"+message+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
+				ThreatReport.append("("+str(lineCount)+") '"+sender+"' does not have the authority to send '"+message+"' to '"+recipient+"' => Encrypt '"+message+"'.")
 			else:
 				for player in Players:
 					if Players[player][4]==Players[sender][4] and player!=sender and player!=recipient:
 						if int(Players[player][0])<int(Players[sender][1][message]):
 							fileOut.append("red,")
-							ThreatReport.append("'"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
+							ThreatReport.append("("+str(lineCount)+") '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"' => Encrypt '"+message+"'.")
 							break
 					if not Environment[N][1] and Players[player][4]==None and player!=sender and player!=recipient:
 						if int(Players[player][0])<int(Players[sender][1][message]):
 							fileOut.append("orange,")
-							ThreatReport.append("Warning: '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"'; step "+str(step)+", line "+str(lineCount)+".")
+							ThreatReport.append("("+str(lineCount)+") 'Warning: '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"' => Encrypt '"+message+"' AND/OR Lock '"+Players[sender][4]+"'.")
 							break
 			fileOut.extend(
 				(
@@ -259,81 +255,81 @@ for items in MainFlow:
 			Players[recipient][3]="(\\x"+recipient+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][1][message]=Players[sender][1][message]
 		elif not senderExists:
-			print("KeyError: Player(sender) '"+sender+"' not defined; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' not defined.");step-=1
 		elif not recipientExists:
-			print("KeyError: Player(recipient) '"+recipient+"' not defined; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");step-=1
 		elif not messageExists:
-			print("KeyError: Player(sender) '"+sender+"' does not own Message '"+message+"'; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own Message '"+message+"'.");step-=1
 		elif Players[sender][4]!=Players[recipient][4]:
-			FeasibilityReport.append("'"+sender+"' and '"+recipient+"' must be in the same Domain to Share '"+message+"'; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' and '"+recipient+"' must be in the same Location to Share '"+message+"'.");step-=1
 		elif sender==recipient:
-			FeasibilityReport.append("'"+sender+"' cannot share '"+message+"' to themselves; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");step-=1
 		elif Players[sender][4]==None:
-			FeasibilityReport.append("'"+sender+"' and '"+recipient+"' must be in a Domain to Share '"+message+"'; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' and '"+recipient+"' must be in a Location to Share '"+message+"'.");step-=1
 
 	elif action=="lock":
 		player=items.pop(0)
-		domain=items.pop(0)
+		location=items.pop(0)
 		playerExists=False
-		domainExists=False
+		locationExists=False
 		for Player in Players: 
 			if Player==player: playerExists=True;break
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if playerExists and domainExists and Players[player][4]==domain and not Environment[N][1]:	
+		if playerExists and locationExists and Players[player][4]==location and not Environment[N][1]:	
 			fileOut.extend(
 				(
-				"\n\\draw[dashed]"+Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dashed]"+Environment[N][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
-				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",
 				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Lock$]{};"
 				)
 			)
 			Environment[N][1]=True
-			Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		elif not playerExists:
-			print("KeyError: Player '"+player+"' not defined; line "+str(lineCount)+".")
-		elif not domainExists:
-			print("KeyError: Domain '"+domain+"' not defined; line "+str(lineCount)+".")
-		elif Players[player][4]!=domain:
-			FeasibilityReport.append("'"+player+"' must be in '"+domain+"' to Lock it; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
+		elif Players[player][4]!=location:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Lock it.");step-=1
 		elif Environment[N][1]:
-			FeasibilityReport.append("'"+domain+"' is already Locked; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already Locked.");step-=1
 
 	elif action=="unlock":
 		player=items.pop(0)
-		domain=items.pop(0)
+		location=items.pop(0)
 		playerExists=False
-		domainExists=False
+		locationExists=False
 		for Player in Players: 
 			if Player==player: playerExists=True;break
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if Players[player][4]==domain and Environment[N][1]:	
+		if Players[player][4]==location and Environment[N][1]:	
 			fileOut.extend(
 				(
-				"\n\\draw"+Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw"+Environment[N][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",
 				"\n\\draw"+Players[player][2]+"node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};",
-				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",
+				"\n\\draw[dotted,-{Latex[angle=45:2ex]}](\\x"+player+",\\yMax-\\step*"+str(step)+")--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",
 				"\n\\draw(\\x"+player+"-\\labelSpacing,\\yMax-\\step*"+str(step)+")node[label=above:$Unlock$]{};"
 				)
 			)
 			Environment[N][1]=False
-			Environment[N][2]="(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+")"
+			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		elif not playerExists:
-			print("KeyError: Player",player,"not defined; line "+str(lineCount)+".")
-		elif not domainExists:
-			print("KeyError: Domain",domain,"not defined; line "+str(lineCount)+".")
-		elif Players[player][4]!=domain:
-			FeasibilityReport.append("'"+player+"' must be in '"+domain+"' to Unlock it; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player",player,"not defined.")
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location",location,"not defined.")
+		elif Players[player][4]!=location:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Unlock it.");step-=1
 		elif not Environment[N][1]:
-			FeasibilityReport.append("'"+domain+"' is already Unlocked; line "+str(lineCount)+".");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already Unlocked.");step-=1
 	step+=1
 	lineCount+=1
 
@@ -342,17 +338,17 @@ for player in Players:
 	if Players[player][3]==None: Players[player][3] =Players[player][2]
 	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
 N=0
-for Domains in Environment:
-	if domain in Domains: break
+for Locations in Environment:
+	if location in Locations: break
 	else: N+=1
 fileOut.append("\n\\draw")
 if not Environment[N][1]: fileOut.append("[dashed]")
 fileOut.extend(
 	(
-	Environment[N][2]+"--(\\x"+domain+"Lock,\\yMax-\\step*"+str(step)+");",	 
-	"\n\\draw(\\x"+domain+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
-	"\n\\draw[very thick] (\\x"+domain+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+domain+",\\y"+domain+");",
-	"\n\\draw(\\x"+domain+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
+	Environment[N][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",	 
+	"\n\\draw(\\x"+location+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
+	"\n\\draw[very thick] (\\x"+location+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+location+",\\y"+location+");",
+	"\n\\draw(\\x"+location+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
 	)
 )
 
@@ -362,7 +358,6 @@ fileOut.extend(
 	"\n\\end{document}"
 	)
 )
-print('\n')
 if len(PostConditions)>0:
 	print("---------------")
 	print("Post Conditions")
@@ -378,63 +373,83 @@ for items in PostConditions:
 
 	if state=="location":
 		player=items[1]
-		domain=items[2]
+		location=items[2]
 		playerExists=False
-		domainExists=False
+		locationExists=False
 		for Player in Players: 
 			if Player==player: playerExists=True;break
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if playerExists and domainExists:
-			if Players[player][4]==domain: 
-				print("True:",items)
-			else: 
-				print("False:",items)
+		if playerExists and locationExists:
+			if Players[player][4]==location: 
+				print("True:  '"+player+"' in location '"+location+"'")
+			else: 	
+				print("False:  '"+player+"' in location '"+location+"'")
 				Failed+=1
 		elif not playerExists:
-			print("KeyError: Player '"+player+"' not defined; line "+str(lineCount)+".")
-		elif not domainExists:
-			print("KeyError: Domain '"+domain+"' not defined; line "+str(lineCount)+".")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 	
 	if state=="locked":
-		domain=items[1]
-		domainExists=False
+		location=items[1]
+		locationExists=False
 		N=0
-		for Domain in Environment:
-			if domain==Domain[0]: domainExists=True;break
+		for Location in Environment:
+			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if domainExists:
-			for Domain in Environment:
-				if domain==Domain[0]: 
-					if Domain[1]: print("True:",items);break
-					else: print("False:",items);Failed+=1;break
-		else: print("KeyError: Domain '"+domain+"' not defined; line "+str(lineCount)+".")
+		if locationExists:
+			for Location in Environment:
+				if location==Location[0]: 
+					if Location[1]: print("True: '"+location+"' locked");break
+					else: print("False:  '"+location+"' locked");Failed+=1;break
+		else: FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
+
+	if state=="own":
+		player=items[1]
+		message=items[2]
+		playerExists=False
+		messageExists=False
+		for Player in Players: 
+			if Player==player: playerExists=True;break
+		for Message in Players[player][1]:
+			if Message==message: messageExists=True;break
+			else: N+=1
+		if playerExists and messageExists:
+			print("True: '"+player+"' owns '"+message+"'")
+		elif playerExists:
+			print("False: '"+player+"' owns '"+message+"'")
+			Failed+=1 
+		elif not playerExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
+		elif not messageExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 	lineCount+=1
 if len(PostConditions)>0:
-	print("-----------------")
+	print("-----------------------------")
 	print("Passed",str(len(PostConditions)-Failed)+'/'+str(len(PostConditions)),str(round(((len(PostConditions)-Failed)/len(PostConditions))*100,2))+'%')
-	print("-----------------\n")
+	print("-----------------------------\n")
 
 if len(FeasibilityReport)>0:
-	print("------------------")
+	print("------------------------")
 	print("Feasibility Report")
-	print("------------------")
+	print("------------------------")
 for item in FeasibilityReport: print(item)
 if len(FeasibilityReport)>0:
-	print("-------------------")
+	print("-----------------------------")
 	print("Passed",str(len(MainFlow)-len(FeasibilityReport))+'/'+str(len(MainFlow)),str(round(((len(MainFlow)-len(FeasibilityReport))/len(MainFlow))*100,2))+'%')
-	print("-------------------\n")
+	print("-----------------------------\n")
 if len(ThreatReport)>0:
-	print("-------------")
+	print("-------------------")
 	print("Threat Report")
-	print("-------------")
+	print("-------------------")
 for item in ThreatReport: print(item)
 if len(ThreatReport)>0:
-	print("-------------")
+	print("-----------------------------")
 	print("Passed",str(len(MainFlow)-len(FeasibilityReport)-len(ThreatReport))+'/'+str(len(MainFlow)-len(FeasibilityReport)),str(round(((len(MainFlow)-len(FeasibilityReport)-len(ThreatReport))/(len(MainFlow)-len(FeasibilityReport)))*100,2))+'%')
-	print("-------------")
+	print("-----------------------------")
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:
      file.write(line)
