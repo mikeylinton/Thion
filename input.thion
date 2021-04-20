@@ -9,15 +9,12 @@ location(Alice,MeetingRoom);
 location(Bob,MeetingRoom);
 locked(MeetingRoom);
 [MainFlow]
-enter(Eve,MeetingRoom);
-lock(Bob,MeetingRoom);
-unlock(Bob,MeetingRoom);
-share(Bob,Msg,Eve);
+share(Alice,Msg,Bob);
 [PostConditions]
 locked(MeetingRoom);
 location(Alice,MeetingRoom);
 location(Eve,MeetingRoom);
 location(Bob,MeetingRoom);
 own(Alice,Msg);
-own(Eve,Msg);
+#own(Eve,Msg);
 own(Bob,Msg);

@@ -337,7 +337,7 @@ for items in MainFlow:
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]!=location:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Unlock it.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to unlock it.");noStep=True
 		if not locationExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif not Environment[N][1]:
@@ -436,7 +436,7 @@ for items in PostConditions:
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
 		if not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+player+"' does not own the message '"+message+"'.")
 	lineCount+=1
 if len(PostConditions)>0:
 	print("-----------------------------")
