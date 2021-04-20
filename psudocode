@@ -1,0 +1,41 @@
+threatSet=[]
+feasibilitySet=[]
+for items in MainFlow:
+    if action=="enter":
+        if location is locked:
+            feasibilitySet.add("player cannot enter location while locked.")
+        else: player enter location
+    if action=="exit":
+        if location is locked:
+            feasibilitySet.add("player cannot exit location while locked.")
+        else: player exit location
+    if action=="lock":
+        if location is locked:
+            feasibilitySet.add("location already locked")
+        else: player lock location
+    if action=="unlock":
+        if location is locked:
+            feasibilitySet.add("location already unlocked.")
+        else: player unlock location
+    if action=="share":
+        if sender and recipient in location:
+            sender share message to recipient
+            if sender.authority < message.authority:
+                threatSet.add("sender does not have the authority to send message to recipient => Encrypt message.")
+            elif recipient.authority < message.authority:
+                threatSet.add("recipient does not have the authority to read message from sender => Encrypt message.")
+            else:
+                for player in Players:
+                    if player in location and player.authority < message.authority:
+                        threatSet.add("player does not have the authority to read message from sender to recipient => Encrypt message.")
+                        break
+                if location not locked:
+                    for player in Players:
+                        if player.authority < message.authority:
+                             threatSet.add("Warning: player does not have the authority to read message from sender to recipient => Encrypt message AND/OR Lock location.")
+
+        else: feasibilitySet.add("sender and recipient must be in the same location to Share message")
+for items in feasibilitySet:
+    OUTPUT items
+for items in threatSet:
+    OUTPUT items

@@ -1,14 +1,16 @@
-import re;import argparse;import subprocess
+import re
+#import argparse
+import subprocess
 
-parser=argparse.ArgumentParser(description='Honors Project by Michael Linton.')
-parser.add_argument('--verbose','-v',action=argparse.BooleanOptionalAction,help='Verbose')
-args=parser.parse_args()
+#parser=argparse.ArgumentParser(description='Honors Project by Michael Linton.')
+#parser.add_argument('--verbose','-v',action=argparse.BooleanOptionalAction,help='Verbose')
+#args=parser.parse_args()
 
 PLACEHOLDER=None;section=None
 Players={}
 Environment=[]
 PreConditions=[];MainFlow=[];PostConditions=[]
-inputfile=open('inputFile','r')
+inputfile=open('input.thion','r')
 fileReader=[]
 fileOut=[]
 ThreatReport=[]
@@ -147,7 +149,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if not Environment[N][1] and Players[player][4]!=location:
+		if locationExists and not Environment[N][1] and Players[player][4]!=location:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
 			else:
@@ -159,14 +161,14 @@ for items in MainFlow:
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=location
-		elif not playerExists:
+		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
-		elif not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
-		elif Environment[N][1]: #and int(Players[Environment[0][location][0]][0])>0:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Enter '"+location+"' while Locked.");step-=1
 		elif Players[player][4]==location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is already in '"+location+"'.");step-=1
+		if not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
+		elif Environment[N][1]:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot enter '"+location+"' while locked.");step-=1
 	
 	elif action=="exit":
 		player=items.pop(0)
@@ -190,14 +192,15 @@ for items in MainFlow:
 			#	HARDCODED
 			Players[player][4]=None
 			#
-		elif not playerExists:
+		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
-		elif not locationExists:
+		elif Players[player][4]==None:
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit outside the environment.");step-=1
+		if not locationExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
 		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Exit '"+location+"' while Locked.");step-=1
-		elif Players[player][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot Exit outside the Environment.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit '"+location+"' while locked.");step-=1
+		
 
 	elif action=="share":
 		sender=items.pop(0)
@@ -218,10 +221,10 @@ for items in MainFlow:
 			if Player==sender: senderExists=True
 			if Player==recipient: recipientExists=True
 			if senderExists and recipientExists: break
-		for Message in Players[sender][1]: 
-			#re.sub('\]$','',re.sub("^enc\[",'',message))
-			if Message==message:messageExists=True;break
-		if senderExists and recipientExists and messageExists and Players[sender][4]==Players[recipient][4] and sender!=recipient and Players[sender][4]!=None:
+		if senderExists:
+			for Message in Players[sender][1]: 
+				if Message==message:messageExists=True;break
+		if recipientExists and messageExists and Players[sender][4]==Players[recipient][4] and sender!=recipient and Players[sender][4]!=None:
 			fileOut.append("\n\\draw[")
 			if messageEncrypted:
 				fileOut.append("dashdotted,")
@@ -254,18 +257,21 @@ for items in MainFlow:
 			Players[sender][3]=Players[sender][2]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][3]="(\\x"+recipient+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][1][message]=Players[sender][1][message]
-		elif not senderExists:
+		if not senderExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' not defined.");step-=1
-		elif not recipientExists:
+		if not recipientExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");step-=1
-		elif not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own Message '"+message+"'.");step-=1
-		elif Players[sender][4]!=Players[recipient][4]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' and '"+recipient+"' must be in the same Location to Share '"+message+"'.");step-=1
-		elif sender==recipient:
+		if not messageExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own the message '"+message+"'.");step-=1
+		if sender==recipient:
 			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");step-=1
+		if (Players[sender][4]==None and Players[recipient][4]==None):
+			FeasibilityReport.append("("+str(lineCount)+") Both '"+sender+"' and '"+recipient+"' must be in the same location to share '"+message+"'.");step-=1
 		elif Players[sender][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' and '"+recipient+"' must be in a Location to Share '"+message+"'.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' must be in the same location as '"+recipient+"' to share '"+message+"'.");step-=1
+		elif Players[recipient][4]==None:
+			FeasibilityReport.append("("+str(lineCount)+") '"+recipient+"' must be in the same location as '"+sender+"' to receive '"+message+"'.");step-=1
+		
 
 	elif action=="lock":
 		player=items.pop(0)
@@ -290,14 +296,14 @@ for items in MainFlow:
 			Environment[N][1]=True
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-		elif not playerExists:
+		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
-		elif not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 		elif Players[player][4]!=location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Lock it.");step-=1
+		if not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already Locked.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already locked.");step-=1
 
 	elif action=="unlock":
 		player=items.pop(0)
@@ -322,14 +328,14 @@ for items in MainFlow:
 			Environment[N][1]=False
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-		elif not playerExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player",player,"not defined.")
-		elif not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location",location,"not defined.")
+		if not playerExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player"+player+"not defined.")
 		elif Players[player][4]!=location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Unlock it.");step-=1
+		if not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location"+location+"not defined.")
 		elif not Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already Unlocked.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already unlocked.");step-=1
 	step+=1
 	lineCount+=1
 
@@ -386,9 +392,9 @@ for items in PostConditions:
 			else: 	
 				print("False:  '"+player+"' in location '"+location+"'")
 				Failed+=1
-		elif not playerExists:
+		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
-		elif not locationExists:
+		if not locationExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 	
 	if state=="locked":
@@ -420,9 +426,9 @@ for items in PostConditions:
 		elif playerExists:
 			print("False: '"+player+"' owns '"+message+"'")
 			Failed+=1 
-		elif not playerExists:
+		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
-		elif not messageExists:
+		if not messageExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 	lineCount+=1
 if len(PostConditions)>0:
@@ -435,19 +441,11 @@ if len(FeasibilityReport)>0:
 	print("Feasibility Report")
 	print("------------------------")
 for item in FeasibilityReport: print(item)
-if len(FeasibilityReport)>0:
-	print("-----------------------------")
-	print("Passed",str(len(MainFlow)-len(FeasibilityReport))+'/'+str(len(MainFlow)),str(round(((len(MainFlow)-len(FeasibilityReport))/len(MainFlow))*100,2))+'%')
-	print("-----------------------------\n")
 if len(ThreatReport)>0:
 	print("-------------------")
 	print("Threat Report")
 	print("-------------------")
 for item in ThreatReport: print(item)
-if len(ThreatReport)>0:
-	print("-----------------------------")
-	print("Passed",str(len(MainFlow)-len(FeasibilityReport)-len(ThreatReport))+'/'+str(len(MainFlow)-len(FeasibilityReport)),str(round(((len(MainFlow)-len(FeasibilityReport)-len(ThreatReport))/(len(MainFlow)-len(FeasibilityReport)))*100,2))+'%')
-	print("-----------------------------")
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:
      file.write(line)

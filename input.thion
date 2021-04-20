@@ -1,0 +1,9 @@
+[Environment]
+MeetingRoom;
+[Players]
+Alice(3);
+[MainFlow]
+enter(Eve,BreakRoom);
+lock(Bob,BreakRoom);
+unlock(Bob,BreakRoom);
+share(Bob,message,Eve);
