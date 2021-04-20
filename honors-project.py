@@ -370,9 +370,9 @@ fileOut.extend(
 	)
 )
 if len(PostConditions)>0:
-	print("---------------")
+	print("---------------------")
 	print("Post Conditions")
-	print("---------------")
+	print("---------------------")
 Failed=0
 lineCount=1
 for item in fileReader:
