@@ -7,8 +7,10 @@
 \newcommand\yMeetingRoom{\yMax-\unit}
 \newcommand\xMeetingRoom{\xMax-\step/2}
 \newcommand\xMeetingRoomLock{\xMeetingRoom-\step/2}
-\newcommand\flowSpacing{\step*2}
-\newcommand\xAlice{\xMeetingRoomLock-\step*1}
+\newcommand\flowSpacing{\step*4}
+\newcommand\xAlice{\xMeetingRoomLock-\step*3}
+\newcommand\xEve{\xMeetingRoomLock-\step*2}
+\newcommand\xBob{\xMeetingRoomLock-\step*1}
 \begin{document}
 \pdfpageheight 450mm
 \pdfpagewidth 210mm
@@ -16,10 +18,18 @@
 \tikzset{cross/.style={cross out,draw=black},cross/.default={1ex}}
 \begin{tikzpicture}[>=latex]
 \draw(\xAlice,\yMax)node[label=above:$Alice(3)$]{};
-\draw(\xAlice,\yMax)node[cross]{};
-\draw[dashed](\xMeetingRoomLock,\yMax)--(\xMeetingRoomLock,\yMax-\step*1);
-\draw(\xMeetingRoomLock,\yMax-\step*1)node[rectangle,fill,inner sep=0.5ex]{};
-\draw[very thick] (\xMeetingRoom-\flowSpacing-\unit*2,\yMax-\step*1+\unit) rectangle (\xMeetingRoom,\yMeetingRoom);
+\draw(\xEve,\yMax)node[label=above:$Eve(3)$]{};
+\draw(\xBob,\yMax)node[label=above:$Bob(1)$]{};
+\draw(\xMeetingRoomLock,\yMax)--(\xMeetingRoomLock,\yMax-\step*2);
+\draw(\xBob,\yMax-\step*1)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*2){};
+\draw[dotted,-{Latex[angle=45:2ex]}](\xBob,\yMax-\step*2)--(\xMeetingRoomLock,\yMax-\step*2);
+\draw(\xBob-\labelSpacing,\yMax-\step*2)node[label=above:$Unlock$]{};
+\draw(\xAlice,\yMax-\step*1)node[cross]{};
+\draw(\xEve,\yMax)node[cross]{};
+\draw(\xBob,\yMax-\step*2)node[cross]{};
+\draw[dashed](\xMeetingRoomLock,\yMax-\step*2)--(\xMeetingRoomLock,\yMax-\step*3);
+\draw(\xMeetingRoomLock,\yMax-\step*3)node[rectangle,fill,inner sep=0.5ex]{};
+\draw[very thick] (\xMeetingRoom-\flowSpacing-\unit*2,\yMax-\step*3+\unit) rectangle (\xMeetingRoom,\yMeetingRoom);
 \draw(\xMeetingRoomLock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
 \end{tikzpicture}
 \end{document}

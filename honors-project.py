@@ -161,15 +161,17 @@ for items in MainFlow:
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=location
+		noStep=False
 		if not playerExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]==location:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is already in '"+location+"'.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is already in '"+location+"'.");noStep=True
 		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot enter '"+location+"' while locked.");step-=1
-	
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot enter '"+location+"' while locked.");noStep=True
+		if noStep: step-=1
+
 	elif action=="exit":
 		player=items.pop(0)
 		location=items.pop(0)
@@ -192,15 +194,16 @@ for items in MainFlow:
 			#	HARDCODED
 			Players[player][4]=None
 			#
+		noStep=False
 		if not playerExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit outside the environment.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit outside the environment.");noStep=True
 		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit '"+location+"' while locked.");step-=1
-		
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit '"+location+"' while locked.");noStep=True
+		if noStep: step-=1
 
 	elif action=="share":
 		sender=items.pop(0)
@@ -257,21 +260,22 @@ for items in MainFlow:
 			Players[sender][3]=Players[sender][2]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][3]="(\\x"+recipient+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][1][message]=Players[sender][1][message]
+		noStep=False
 		if not senderExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' not defined.");noStep=True
 		if not recipientExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");noStep=True
 		if not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own the message '"+message+"'.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own the message '"+message+"'.");noStep=True
 		if sender==recipient:
-			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");step-=1
-		if (Players[sender][4]==None and Players[recipient][4]==None):
-			FeasibilityReport.append("("+str(lineCount)+") Both '"+sender+"' and '"+recipient+"' must be in the same location to share '"+message+"'.");step-=1
-		elif Players[sender][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' must be in the same location as '"+recipient+"' to share '"+message+"'.");step-=1
-		elif Players[recipient][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+recipient+"' must be in the same location as '"+sender+"' to receive '"+message+"'.");step-=1
-		
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");noStep=True
+		if senderExists and recipientExists and (Players[sender][4]==None and Players[recipient][4]==None):
+			FeasibilityReport.append("("+str(lineCount)+") Both '"+sender+"' and '"+recipient+"' must be in the same location to share '"+message+"'.");noStep=True
+		elif senderExists and Players[sender][4]==None:
+			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' must be in the same location as '"+recipient+"' to share '"+message+"'.");noStep=True
+		elif recipientExists and Players[recipient][4]==None:
+			FeasibilityReport.append("("+str(lineCount)+") '"+recipient+"' must be in the same location as '"+sender+"' to receive '"+message+"'.");noStep=True
+		if noStep: step-=1
 
 	elif action=="lock":
 		player=items.pop(0)
@@ -296,14 +300,16 @@ for items in MainFlow:
 			Environment[N][1]=True
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+		noStep=False
 		if not playerExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]!=location:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Lock it.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Lock it.");noStep=True
 		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already locked.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already locked.");noStep=True
+		if noStep: step-=1
 
 	elif action=="unlock":
 		player=items.pop(0)
@@ -329,16 +335,17 @@ for items in MainFlow:
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 		if not playerExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player"+player+"not defined.")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]!=location:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Unlock it.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Unlock it.");noStep=True
 		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location"+location+"not defined.")
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif not Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already unlocked.");step-=1
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already unlocked.");noStep=True
+		if noStep: step-=1
 	step+=1
 	lineCount+=1
-
+if noStep: step+=1
 
 for player in Players:
 	if Players[player][3]==None: Players[player][3] =Players[player][2]
