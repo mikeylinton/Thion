@@ -16,5 +16,5 @@ location(Alice,MeetingRoom);
 location(Eve,MeetingRoom);
 location(Bob,MeetingRoom);
 own(Alice,Msg);
-#own(Eve,Msg);
+own(Eve,Msg);
 own(Bob,Msg);

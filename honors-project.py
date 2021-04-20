@@ -435,8 +435,7 @@ for items in PostConditions:
 			Failed+=1 
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
-		if not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+player+"' does not own the message '"+message+"'.")
+
 	lineCount+=1
 if len(PostConditions)>0:
 	print("-----------------------------")
