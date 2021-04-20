@@ -70,7 +70,7 @@ fileOut.extend(
 	"\\usetikzlibrary{shapes.misc}",
 	"\\usetikzlibrary{arrows.meta}",
 	"\\usepackage{nopageno}",
-	"\n\\newcommand\\unit{0.2675}",
+	"\n\\newcommand\\unit{0.2625}",
 	"\n\\newcommand\\step{\\unit*6}",
 	"\n\\newcommand\\yMax{\\step*14}",
 	"\n\\newcommand\\xMax{\\step*14}",
@@ -310,7 +310,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		if Players[player][4]==location and Environment[N][1]:	
+		if playerExists and locationExists and Players[player][4]==location and Environment[N][1]:	
 			fileOut.extend(
 				(
 				"\n\\draw"+Environment[N][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",
@@ -337,15 +337,13 @@ for items in MainFlow:
 for player in Players:
 	if Players[player][3]==None: Players[player][3] =Players[player][2]
 	fileOut.append("\n\\draw"+Players[player][3]+"node[cross]{};")
-N=0
-for Locations in Environment:
-	if location in Locations: break
-	else: N+=1
+
 fileOut.append("\n\\draw")
-if not Environment[N][1]: fileOut.append("[dashed]")
+if not Environment[0][1]: fileOut.append("[dashed]")
+location=Environment[0][0]
 fileOut.extend(
 	(
-	Environment[N][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",	 
+	Environment[0][2]+"--(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+");",	 
 	"\n\\draw(\\x"+location+"Lock,\yMax-\\step*"+str(step)+")node[rectangle,fill,inner sep=0.5ex]{};",
 	"\n\\draw[very thick] (\\x"+location+"-\\flowSpacing-\\unit*2,\yMax-\\step*"+str(step)+"+\\unit) rectangle (\\x"+location+",\\y"+location+");",
 	"\n\\draw(\\x"+location+"Lock,\\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};"
