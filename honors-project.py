@@ -266,7 +266,7 @@ for items in MainFlow:
 		if not recipientExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");noStep=True
 		if not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not own the message '"+message+"'.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not have the message '"+message+"'.");noStep=True
 		if sender==recipient:
 			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");noStep=True
 		if senderExists and recipientExists and (Players[sender][4]==None and Players[recipient][4]==None):
@@ -418,7 +418,7 @@ for items in PostConditions:
 					else: print("False:  '"+location+"' locked");Failed+=1;break
 		else: FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.")
 
-	if state=="own":
+	if state=="has":
 		player=items[1]
 		message=items[2]
 		playerExists=False
@@ -429,9 +429,9 @@ for items in PostConditions:
 			if Message==message: messageExists=True;break
 			else: N+=1
 		if playerExists and messageExists:
-			print("True: '"+player+"' owns '"+message+"'")
+			print("True: '"+player+"' have '"+message+"'")
 		elif playerExists:
-			print("False: '"+player+"' owns '"+message+"'")
+			print("False: '"+player+"' have '"+message+"'")
 			Failed+=1 
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
