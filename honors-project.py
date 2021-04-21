@@ -262,9 +262,9 @@ for items in MainFlow:
 			Players[recipient][1][message]=Players[sender][1][message]
 		noStep=False
 		if not senderExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' not defined.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+sender+"' not defined.");noStep=True
 		if not recipientExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+recipient+"' not defined.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+recipient+"' not defined.");noStep=True
 		if not messageExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not have the message '"+message+"'.");noStep=True
 		if sender==recipient:

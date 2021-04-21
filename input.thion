@@ -13,5 +13,6 @@ share(Alice, aMsg, Eve);
 unlock(Alice,MeetingRoom);
 share(Eve, enc[eMsg], Alice);
 enter(Bob,MeetingRoom);
-share(Alice, enc[eMsg], Eve);
+share(Alice, bMsg, Eve);
 share(Alice, enc[eMsg], Bob);
+share(Eve, enc[aMsg], Alice);

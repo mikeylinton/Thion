@@ -33,20 +33,24 @@
 \draw(\xAlice,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*4);
 \draw(\xEve-\labelSpacing,\yMax-\step*4)node[label=above:$Msg(3)$]{};
 \draw[dotted](\xBob,\yMax)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*5){};
-\draw[dashdotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*6)--(\xEve,\yMax-\step*6);
+\draw[-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*6)--(\xEve,\yMax-\step*6);
 \draw(\xAlice,\yMax-\step*3)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*6);
 \draw(\xEve,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*6);
-\draw(\xAlice-\labelSpacing,\yMax-\step*6)node[label=above:$Msg(3)$]{};
+\draw(\xAlice-\labelSpacing,\yMax-\step*6)node[label=above:$Msg(1)$]{};
 \draw[dashdotted,-{Latex[angle=45:2ex]}](\xAlice,\yMax-\step*7)--(\xBob,\yMax-\step*7);
 \draw(\xAlice,\yMax-\step*6)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*7);
 \draw(\xBob,\yMax-\step*5)node[circle,fill,inner sep=0.5ex]{}--(\xBob,\yMax-\step*7);
 \draw(\xAlice-\labelSpacing,\yMax-\step*7)node[label=above:$Msg(3)$]{};
-\draw(\xAlice,\yMax-\step*7)node[cross]{};
-\draw(\xEve,\yMax-\step*6)node[cross]{};
+\draw[dashdotted,-{Latex[angle=45:2ex]}](\xEve,\yMax-\step*8)--(\xAlice,\yMax-\step*8);
+\draw(\xEve,\yMax-\step*4)node[circle,fill,inner sep=0.5ex]{}--(\xEve,\yMax-\step*8);
+\draw(\xAlice,\yMax-\step*7)node[circle,fill,inner sep=0.5ex]{}--(\xAlice,\yMax-\step*8);
+\draw(\xEve-\labelSpacing,\yMax-\step*8)node[label=above:$Msg(2)$]{};
+\draw(\xAlice,\yMax-\step*8)node[cross]{};
+\draw(\xEve,\yMax-\step*8)node[cross]{};
 \draw(\xBob,\yMax-\step*7)node[cross]{};
-\draw[dashed](\xMeetingRoomLock,\yMax-\step*3)--(\xMeetingRoomLock,\yMax-\step*8);
-\draw(\xMeetingRoomLock,\yMax-\step*8)node[rectangle,fill,inner sep=0.5ex]{};
-\draw[very thick] (\xMeetingRoom-\flowSpacing-\unit*2,\yMax-\step*8+\unit) rectangle (\xMeetingRoom,\yMeetingRoom);
+\draw[dashed](\xMeetingRoomLock,\yMax-\step*3)--(\xMeetingRoomLock,\yMax-\step*9);
+\draw(\xMeetingRoomLock,\yMax-\step*9)node[rectangle,fill,inner sep=0.5ex]{};
+\draw[very thick] (\xMeetingRoom-\flowSpacing-\unit*2,\yMax-\step*9+\unit) rectangle (\xMeetingRoom,\yMeetingRoom);
 \draw(\xMeetingRoomLock,\yMax)node[rectangle,fill,inner sep=0.5ex,label=right:$Lock$]{};
 \end{tikzpicture}
 \end{document}
