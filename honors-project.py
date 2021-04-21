@@ -431,9 +431,9 @@ for items in PostConditions:
 			if Message==message: messageExists=True;break
 			else: N+=1
 		if playerExists and messageExists:
-			print("True: '"+player+"' have '"+message+"'")
+			print("True: '"+player+"' has '"+message+"'")
 		elif playerExists:
-			print("False: '"+player+"' have '"+message+"'")
+			print("False: '"+player+"' has '"+message+"'")
 			Failed+=1 
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
