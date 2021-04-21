@@ -1,14 +1,10 @@
 [Environment]
 MeetingRoom;
 [Players]
-Alice(3)[Msg(2)];
+Alice(3);
 Eve(3);
-Bob(1);
 [PreConditions]
 location(Alice, MeetingRoom);
-location(Eve, MeetingRoom);
-locked(MeetingRoom);
 [PostConditions]
 location(Alice, MeetingRoom);
 location(Eve, MeetingRoom);
-locked(MeetingRoom);

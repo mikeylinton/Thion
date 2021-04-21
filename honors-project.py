@@ -392,9 +392,9 @@ for items in PostConditions:
 			else: N+=1
 		if playerExists and locationExists:
 			if Players[player][4]==location: 
-				print("True:  '"+player+"' in location '"+location+"'")
+				print("True:  '"+player+"' in '"+location+"'")
 			else: 	
-				print("False:  '"+player+"' in location '"+location+"'")
+				print("False:  '"+player+"' in '"+location+"'")
 				Failed+=1
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.")
