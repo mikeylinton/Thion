@@ -134,10 +134,10 @@ errorCount=0
 for item in fileReader:
 	lineCount+=1
 	if item=="[MainFlow]": break
-
+noStep=False
 for items in MainFlow:
 	action=items.pop(0)
-
+	noStep=False
 	if action=="enter":
 		player=items.pop(0)
 		location=items.pop(0)
@@ -149,7 +149,6 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		noStep=False
 		if locationExists and not Environment[N][1] and Players[player][4]!=location:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
@@ -183,7 +182,6 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		noStep=False
 		if playerExists and locationExists and not Environment[N][1] and Players[player][4]!=None:
 			fileOut.extend(
 				(
@@ -260,7 +258,6 @@ for items in MainFlow:
 			Players[sender][3]=Players[sender][2]="(\\x"+sender+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][3]="(\\x"+recipient+",\\yMax-\\step*"+str(step)+")"
 			Players[recipient][1][message]=Players[sender][1][message]
-		noStep=False
 		if not senderExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+sender+"' not defined.");noStep=True
 		if not recipientExists:
@@ -288,7 +285,6 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		noStep=False
 		if playerExists and locationExists and Players[player][4]==location and not Environment[N][1]:	
 			fileOut.extend(
 				(
@@ -323,7 +319,6 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
-		noStep=False
 		if playerExists and locationExists and Players[player][4]==location and Environment[N][1]:	
 			fileOut.extend(
 				(
