@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.4.10)  20 APR 2021 21:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.4.10)  21 APR 2021 21:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -403,17 +403,17 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./out.aux) ) 
 Here is how much of TeX's memory you used:
- 12211 strings out of 481252
- 257084 string characters out of 5915888
- 506181 words of memory out of 5000000
- 28970 multiletter control sequences out of 15000+600000
+ 12250 strings out of 481252
+ 257851 string characters out of 5915888
+ 512181 words of memory out of 5000000
+ 29009 multiletter control sequences out of 15000+600000
  403430 words of font info for 27 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  113i,7n,116p,501b,674s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on out.pdf (1 page, 20826 bytes).
+Output written on out.pdf (1 page, 22209 bytes).
 PDF statistics:
  19 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream

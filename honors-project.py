@@ -149,6 +149,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
+		noStep=False
 		if locationExists and not Environment[N][1] and Players[player][4]!=location:
 			if Players[player][3]==None:
 				fileOut.append("\n\\draw[dotted](\\x"+player+",\\yMax)node[circle,fill,inner sep=0.5ex]{}--(\\x"+player+",\\yMax-\\step*"+str(step)+"){};")
@@ -161,8 +162,7 @@ for items in MainFlow:
 				)
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
 			Players[player][4]=location
-		noStep=False
-		if not playerExists:
+		elif not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]==location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is already in '"+location+"'.");noStep=True
@@ -183,6 +183,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
+		noStep=False
 		if playerExists and locationExists and not Environment[N][1] and Players[player][4]!=None:
 			fileOut.extend(
 				(
@@ -194,8 +195,7 @@ for items in MainFlow:
 			#	HARDCODED
 			Players[player][4]=None
 			#
-		noStep=False
-		if not playerExists:
+		elif not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]==None:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit outside the environment.");noStep=True
@@ -288,6 +288,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
+		noStep=False
 		if playerExists and locationExists and Players[player][4]==location and not Environment[N][1]:	
 			fileOut.extend(
 				(
@@ -300,15 +301,15 @@ for items in MainFlow:
 			Environment[N][1]=True
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
-		noStep=False
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
+		elif Environment[N][1]:
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already locked.");noStep=True
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]!=location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to Lock it.");noStep=True
-		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
-		elif Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already locked.");noStep=True
+		
 		if noStep: step-=1
 
 	elif action=="unlock":
@@ -322,6 +323,7 @@ for items in MainFlow:
 		for Location in Environment:
 			if location==Location[0]: locationExists=True;break
 			else: N+=1
+		noStep=False
 		if playerExists and locationExists and Players[player][4]==location and Environment[N][1]:	
 			fileOut.extend(
 				(
@@ -334,14 +336,14 @@ for items in MainFlow:
 			Environment[N][1]=False
 			Environment[N][2]="(\\x"+location+"Lock,\\yMax-\\step*"+str(step)+")"
 			Players[player][3]=Players[player][2]="(\\x"+player+",\\yMax-\\step*"+str(step)+")"
+		elif not locationExists:
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
+		elif not Environment[N][1]:
+			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already unlocked.");noStep=True
 		if not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]!=location:
 			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' must be in '"+location+"' to unlock it.");noStep=True
-		if not locationExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
-		elif not Environment[N][1]:
-			FeasibilityReport.append("("+str(lineCount)+") '"+location+"' is already unlocked.");noStep=True
 		if noStep: step-=1
 	step+=1
 	lineCount+=1
