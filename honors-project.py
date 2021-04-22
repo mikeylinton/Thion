@@ -260,7 +260,7 @@ for items in MainFlow:
 		if not recipientExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+recipient+"' not defined.");noStep=True
 		if not messageExists:
-			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not have the message '"+message+"'.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") KeyError: '"+sender+"' does not have the Message '"+message+"'.");noStep=True
 		if sender==recipient:
 			FeasibilityReport.append("("+str(lineCount)+") '"+sender+"' cannot share '"+message+"' to themselves.");noStep=True
 		if senderExists and recipientExists and (Players[sender][4]==None and Players[recipient][4]==None):
