@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.4.10)  22 APR 2021 04:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.4.10)  22 APR 2021 05:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -401,22 +401,26 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./out.aux) ) 
+]
+Overfull \vbox (3982.96698pt too high) has occurred while \output is active []
+
+
+[2{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./out.aux) ) 
 Here is how much of TeX's memory you used:
- 12292 strings out of 481252
- 258645 string characters out of 5915888
- 526848 words of memory out of 5000000
- 29051 multiletter control sequences out of 15000+600000
+ 12950 strings out of 481252
+ 270924 string characters out of 5915888
+ 810020 words of memory out of 5000000
+ 29709 multiletter control sequences out of 15000+600000
  403430 words of font info for 27 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  113i,7n,116p,501b,674s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on out.pdf (1 page, 22956 bytes).
+</usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on out.pdf (2 pages, 37700 bytes).
 PDF statistics:
- 19 PDF objects out of 1000 (max. 8388607)
- 13 compressed objects within 1 object stream
+ 22 PDF objects out of 1000 (max. 8388607)
+ 15 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

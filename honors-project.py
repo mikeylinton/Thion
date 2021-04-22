@@ -193,7 +193,7 @@ for items in MainFlow:
 		elif not playerExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Player '"+player+"' not defined.");noStep=True
 		elif Players[player][4]==None:
-			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' cannot exit outside the environment.");noStep=True
+			FeasibilityReport.append("("+str(lineCount)+") '"+player+"' is not in '"+location+"'.");noStep=True
 		if not locationExists:
 			FeasibilityReport.append("("+str(lineCount)+") KeyError: Location '"+location+"' not defined.");noStep=True
 		elif Environment[N][1]:
@@ -239,7 +239,7 @@ for items in MainFlow:
 							fileOut.append("red,")
 							ThreatReport.append("("+str(lineCount)+") '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"' => Encrypt '"+message+"'.")
 							break
-					if not Environment[N][1] and Players[player][4]==None and player!=sender and player!=recipient:
+					if locationExists and not Environment[N][1] and Players[player][4]==None and player!=sender and player!=recipient:
 						if int(Players[player][0])<int(Players[sender][1][message]):
 							fileOut.append("orange,")
 							ThreatReport.append("("+str(lineCount)+") 'Warning: '"+player+"' does not have the authority to read '"+message+"' from '"+sender+"' to '"+recipient+"' => Encrypt '"+message+"' AND/OR Lock '"+Players[sender][4]+"'.")
