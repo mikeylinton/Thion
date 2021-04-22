@@ -434,17 +434,17 @@ for items in PostConditions:
 if len(PostConditions)>0:
 	print("-----------------------------")
 	print("Passed",str(len(PostConditions)-Failed)+'/'+str(len(PostConditions)),str(round(((len(PostConditions)-Failed)/len(PostConditions))*100,2))+'%')
-	print("-----------------------------\n")
+	print("-----------------------------")
 
 if len(FeasibilityReport)>0:
-	print("------------------------")
+	print("\n------------------------")
 	print("Feasibility Report")
-	print("------------------------\n")
+	print("------------------------")
 for item in FeasibilityReport: print(item)
 if len(ThreatReport)>0:
-	print("-------------------")
+	print("\n-------------------")
 	print("Threat Report")
-	print("-------------------\n")
+	print("-------------------")
 for item in ThreatReport: print(item)
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:
@@ -453,4 +453,4 @@ file.close() #close file
 try:
 	subprocess.call(["pdflatex","out.tex"])
 except:
-	print("out.tex could not be converted to a PDF.")
+	print("\nout.tex could not be converted to a PDF.")
