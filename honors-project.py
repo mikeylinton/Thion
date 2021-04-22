@@ -439,12 +439,12 @@ if len(PostConditions)>0:
 if len(FeasibilityReport)>0:
 	print("------------------------")
 	print("Feasibility Report")
-	print("------------------------")
+	print("------------------------\n")
 for item in FeasibilityReport: print(item)
 if len(ThreatReport)>0:
 	print("-------------------")
 	print("Threat Report")
-	print("-------------------")
+	print("-------------------\n")
 for item in ThreatReport: print(item)
 file = open('out.tex', 'w') #write to file 
 for line in fileOut:

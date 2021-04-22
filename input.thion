@@ -1,12 +1,30 @@
 [Environment]
 MeetingRoom;
 [Players]
-Alice(3)[aMsg(2),bMsg(3)];
+Alice(3)[Msg(2),aMsg(2),bMsg(3)];
 Eve(3)[eMsg(3)];
+Bob(1);
 [PreConditions]
 location(Alice, MeetingRoom);
 location(Eve, MeetingRoom);
 locked(MeetingRoom);
+[MainFlow]
+share(Alice, aMsg, Eve);
+unlock(Alice,MeetingRoom);
+share(Eve, enc[eMsg], Alice);
+enter(Bob,MeetingRoom);
+share(Alice, bMsg, Eve);
+share(Alice, enc[eMsg], Bob);
+share(Eve, enc[aMsg], Alice);
+share(Alice, Msg, Eve);
+enter(Bob,MeetingRoom);
+share(Eve, Msg, Alice);
+share(Alice, Msg, Bob);
+share(Bob, Msg, Eve);
+enter(Eve,BreakRoom);
+lock(Bob,BreakRoom);
+unlock(Bob,BreakRoom);
+share(Bob,message,Eve);
 [PostConditions]
 location(Alice, MeetingRoom);
 location(Eve, MeetingRoom);
