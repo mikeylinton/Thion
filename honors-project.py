@@ -1,16 +1,13 @@
 import re
-#import argparse
+import sys 
 import subprocess
-
-#parser=argparse.ArgumentParser(description='Honors Project by Michael Linton.')
-#parser.add_argument('--verbose','-v',action=argparse.BooleanOptionalAction,help='Verbose')
-#args=parser.parse_args()
-
-PLACEHOLDER=None;section=None
+if (len(sys.argv)==1):
+	print("Usage: thion.py [inputFile]");exit(0)
+section=None
 Players={}
 Environment=[]
 PreConditions=[];MainFlow=[];PostConditions=[]
-inputfile=open('input.thion','r')
+inputfile=open(sys.argv[1],'r')
 fileReader=[]
 fileOut=[]
 ThreatReport=[]
@@ -453,4 +450,7 @@ file = open('out.tex', 'w') #write to file
 for line in fileOut:
      file.write(line)
 file.close() #close file
-subprocess.call(["pdflatex","out.tex"])
+try:
+	subprocess.call(["pdflatex","out.tex"])
+except:
+	print("out.tex could not be converted to a PDF.")

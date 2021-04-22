@@ -1,10 +1,19 @@
 [Environment]
 MeetingRoom;
 [Players]
-Alice(3);
-Eve(3);
+Alice(3)[aMsg(2),bMsg(3)];
+Eve(3)[eMsg(3)];
 [PreConditions]
 location(Alice, MeetingRoom);
+location(Eve, MeetingRoom);
+locked(MeetingRoom);
 [PostConditions]
 location(Alice, MeetingRoom);
 location(Eve, MeetingRoom);
+locked(MeetingRoom);
+has(Alice,aMsg);
+has(Alice,bMsg);
+has(Alice,eMsg);
+has(Eve,aMsg);
+has(Eve,bMsg);
+has(Eve,eMsg);
